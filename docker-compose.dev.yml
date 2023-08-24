@@ -1,0 +1,21 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      args:
+        UID: ${UID}
+        GID: ${GID}
+        PORT: ${PORT}
+      dockerfile: Dockerfile
+    env_file: .env.production
+    user: ${UID}:${GID}
+    restart: always
+    ports:
+      - ${PORT}:${PORT}
+    networks:
+      - bridge
+
+networks:
+  bridge:
+    external: true
