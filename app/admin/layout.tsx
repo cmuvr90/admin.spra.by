@@ -1,20 +1,8 @@
 'use client';
 
 import React, {ReactNode, useCallback, useState} from 'react';
-import {
-  Frame,
-  ContextualSaveBar,
-  Loading,
-  Toast,
-  Modal,
-  FooterHelp,
-  Text,
-  Layout,
-  Divider,
-  AppProvider
-} from '@shopify/polaris'
+import {Frame} from '@shopify/polaris'
 import {AdminMenu, TopBar} from "@/components";
-import {useRouter} from 'next/router'
 
 export default function MainLayout({children}: {children: ReactNode}) {
   const [navigationActive, setNavigationActive] = useState(false);

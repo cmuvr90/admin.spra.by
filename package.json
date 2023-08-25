@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@splidejs/react-splide": "^0.7.12",
-    "@shopify/polaris": "^11.4.5",
+    "@shopify/polaris": "^11.13.0",
     "@types/node": "20.4.5",
     "@types/react": "18.2.16",
     "@types/react-dom": "18.2.7",
