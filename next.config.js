@@ -4,6 +4,7 @@ const path = require('path');
 const nextConfig = {
   experimental: {
     serverActions: true,
+    appDir: true
   },
   images: {
     remotePatterns: [

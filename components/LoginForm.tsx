@@ -3,6 +3,7 @@
 import React, {useState} from 'react'
 import {Button, FormLayout, TextField} from '@shopify/polaris'
 import {useMessage} from "@/hooks";
+import {signIn} from "next-auth/react";
 
 export const LoginForm = ({onSend}: Props) => {
   const toast = useMessage()
@@ -11,7 +12,7 @@ export const LoginForm = ({onSend}: Props) => {
   const [loading, setLoading] = useState(false)
 
   const _onSend = async () => {
-    if (onSend) onSend({email, password});
+    await signIn('credentials', {email, password, redirect: true, callbackUrl: '/admin'})
   }
 
   return <FormLayout>
