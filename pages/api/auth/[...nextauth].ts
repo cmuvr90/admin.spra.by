@@ -23,8 +23,9 @@ export const authOptions: NextAuthOptions = {
             body: JSON.stringify({email, password})
           });
 
+          const response = await query.json();
+
           if (query.ok) {
-            const response = await query.json();
             console.log('response.data = ', response.data);
             if (response?.data?.user && response?.data?.accessToken) return {
               ...response.data.user,

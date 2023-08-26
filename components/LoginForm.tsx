@@ -2,17 +2,18 @@
 
 import React, {useState} from 'react'
 import {Button, FormLayout, TextField} from '@shopify/polaris'
-import {useMessage} from "@/hooks";
-import {signIn} from "next-auth/react";
+import {signIn, SignInResponse} from "next-auth/react";
 
 export const LoginForm = ({onSend}: Props) => {
-  const toast = useMessage()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const _onSend = async () => {
-    await signIn('credentials', {email, password, redirect: true, callbackUrl: '/admin'})
+  const onLogin = async () => {
+    setLoading(true);
+    const response = await signIn('credentials', {email, password, redirect: false, callbackUrl: '/admin'});
+    if (typeof onSend === 'function') await onSend(response);
+    setLoading(false);
   }
 
   return <FormLayout>
@@ -36,10 +37,10 @@ export const LoginForm = ({onSend}: Props) => {
       autoComplete='off'
       value={password}
     />
-    <Button onClick={_onSend} primary fullWidth loading={loading}>Login</Button>
+    <Button onClick={onLogin} primary fullWidth loading={loading}>Login</Button>
   </FormLayout>
 }
 
 type Props = {
-  onSend?: ({email, password}: {email: string, password: string}) => void;
+  onSend?: (params?: SignInResponse) => Promise<void>;
 }

@@ -10,16 +10,19 @@ import {
   ON_CHANGE_TOP_BAR_PRIMARY_ACTION,
   ON_CHANGE_TOP_BAR_SECONDARY_ACTION,
 
-  topBar,
-  modalType,
+  Message, Modal, TopBar,
 } from '../actions/layoutActions'
 
 /**
  *
  */
-const initialState: initialStateType = {
+const initialState: LayoutState = {
   loading: false,
-  message: null,
+  message: {
+    content: [],
+    error: false,
+    duration: 3000,
+  },
   modal: {
     large: false,
     open: false,
@@ -104,9 +107,9 @@ export const layoutReducer = (state = initialState, action: {type: any; payload:
   }
 }
 
-type initialStateType = {
+export type LayoutState = {
   loading: boolean,
-  message: string | null,
-  modal: modalType,
-  topBar: topBar,
+  message: Message,
+  modal: Modal,
+  topBar: TopBar,
 }

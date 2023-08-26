@@ -28,19 +28,20 @@ export const onChangeMessage = (
   message: string | null | {[key: string]: string} = null,
   error: boolean = false,
   duration: number = 3000) => {
+
   const content = Array.isArray(message) ? message.reverse() : (
     typeof message === 'string' ? [message] : (
-      (typeof message === 'object' && message !== null) ? Object.values(message) : null
+      (typeof message === 'object' && message !== null) ? Object.values(message) : []
     )
   )
 
   return {
     type: ON_CHANGE_MESSAGE,
-    payload: message ? {
+    payload: {
       content,
       error: error,
       duration: duration,
-    } : null,
+    },
   }
 }
 
@@ -126,7 +127,7 @@ export const onChangeTopBarSecondayAction = (params: any = {}) => ({
   payload: {...params},
 })
 
-export type modalType = {
+export type Modal = {
   large: boolean,
   open: boolean,
   title: string | null,
@@ -137,7 +138,7 @@ export type modalType = {
   hideSection: boolean
 }
 
-export type  topBar = {
+export type  TopBar = {
   active: boolean,
   title: string | null,
   saveAction: (() => any) | null,
@@ -146,4 +147,11 @@ export type  topBar = {
   fullWidth: boolean,
   contextControl: string | null,
   secondaryMenu: null,
+}
+
+
+export type Message = {
+  content: string[],
+  error: false,
+  duration: 3000,
 }

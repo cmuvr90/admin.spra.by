@@ -2,7 +2,7 @@
 
 import React, {ReactNode} from 'react'
 import {AppProvider as ShopifyProvider} from '@shopify/polaris'
-import {store} from "@/core/redux/store";
+import {store} from "@/redux/store";
 import en from "@shopify/polaris/locales/en.json";
 import '@shopify/polaris/build/esm/styles.css'
 import {NextLink} from "@/components/NextLink";
