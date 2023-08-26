@@ -3,18 +3,18 @@
 import React, {ReactNode, useCallback, useState} from 'react';
 import {Frame} from '@shopify/polaris'
 import {AdminMenu, TopBar} from "@/components";
+import {useSession} from "next-auth/react";
+import {signOut} from "next-auth/react";
 
 export default function MainLayout({children}: {children: ReactNode}) {
+  const session = useSession();
+
   const [navigationActive, setNavigationActive] = useState(false);
 
   const onLogout = async () => {
-    // await api.users.logout()
-    // location.href = '/login'
+    await signOut();
   }
 
-  /**
-   *
-   */
   const onNavigationToggle = useCallback(() => setNavigationActive(v => !v), [])
 
   /**
@@ -33,6 +33,7 @@ export default function MainLayout({children}: {children: ReactNode}) {
       logo={logo}
       topBar={
         <TopBar
+          user={session?.data?.user}
           onNavigationToggle={onNavigationToggle}
           onLogout={onLogout}
         />

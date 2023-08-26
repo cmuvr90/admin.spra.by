@@ -9,6 +9,7 @@ export const authOptions: NextAuthOptions = {
         email: {label: "Username", type: "text", placeholder: "email"},
         password: {label: "Password", type: "password"}
       },
+
       async authorize(credentials, req) {
         console.log(credentials);
 
@@ -29,7 +30,6 @@ export const authOptions: NextAuthOptions = {
             console.log('response.data = ', response.data);
             if (response?.data?.user && response?.data?.accessToken) return {
               ...response.data.user,
-              name: `${response.data.user.firstName} ${response.data.user.lastName}`,
               accessToken: response.data.accessToken,
             }
           }
@@ -41,15 +41,17 @@ export const authOptions: NextAuthOptions = {
     })
   ],
 
-  // callbacks: {
-  //   async session({session, token, user}) {
-  //
-  //     console.log(session, token, user);
-  //
-  //     session.user = token
-  //     return session
-  //   }
-  // },
+  callbacks: {
+    async jwt({token, user}) {
+      if (user) token.role = user.role;
+      return token;
+    },
+
+    async session({session, token}) {
+      if (session?.user) session.user.role = token.role;
+      return session
+    }
+  },
 
   session: {
     strategy: 'jwt'
