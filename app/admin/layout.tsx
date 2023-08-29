@@ -1,16 +1,22 @@
 'use client';
 
 import React, {ReactNode, useCallback, useState} from 'react';
-import {Frame} from '@shopify/polaris'
+import {Frame, Loading} from '@shopify/polaris'
 import {AdminMenu, TopBar} from "@/components";
-import {useUser} from "@/hooks/useUser";
 import {ManagerMenu} from "@/components/ManagerMenu";
+import {useSelector} from "react-redux";
+import {Storage} from "@/redux/store";
+import {useUser} from "@/hooks";
 
 export default function MainLayout({children}: {children: ReactNode}) {
   const user = useUser();
   const [navigationActive, setNavigationActive] = useState(false);
 
   const onNavigationToggle = useCallback(() => setNavigationActive(v => !v), [])
+
+  const loading = useSelector((state: Storage) => state.layout.loading)
+
+  const loadingMarkup = loading ? <Loading/> : null
 
   /**
    *
@@ -36,8 +42,8 @@ export default function MainLayout({children}: {children: ReactNode}) {
       showMobileNavigation={navigationActive}
       onNavigationDismiss={onNavigationToggle}
     >
+      {loadingMarkup}
       {/*{contextualSaveBarMarkup}*/}
-      {/*{loadingMarkup}*/}
       {/*{toastMarkup}*/}
       {/*{modalMarkup}*/}
       {children}

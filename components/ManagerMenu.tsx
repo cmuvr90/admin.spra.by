@@ -6,18 +6,18 @@ import {usePathname} from "next/navigation";
 export const ManagerMenu = () => {
   const path = usePathname();
 
-  return <Navigation location={path ?? ''}>
+  return <Navigation location={!!path?.length && path !== '/admin' ? path : '/admin/dashboard'}>
     <Navigation.Section
       items={[
         {
           label: 'Dashboard',
           icon: HomeMajor,
-          url: '/dashboard',
+          url: 'admin/dashboard',
         },
         {
           label: 'Products',
           icon: ProductsMajor,
-          url: '/products',
+          url: 'admin/products',
         },
       ]}
     />

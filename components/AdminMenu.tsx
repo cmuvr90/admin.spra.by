@@ -14,43 +14,43 @@ import {usePathname} from "next/navigation";
 export const AdminMenu = ({}) => {
   const path = usePathname();
 
-  return <Navigation location={path ?? '/'}>
+  return <Navigation location={!!path?.length && path !== '/admin' ? path : '/admin/dashboard'}>
     <Navigation.Section
       items={[
         {
           label: 'Dashboard',
           icon: HomeMajor,
-          url: '/dashboard',
+          url: '/admin/dashboard',
         },
         {
           label: 'Users',
           icon: CustomersMajor,
-          url: '/users',
+          url: '/admin/users',
         },
         {
           label: 'Brands',
           icon: InventoryMajor,
-          url: '/brands',
+          url: '/admin/brands',
         },
         {
           label: 'Categories',
           icon: CategoriesMajor,
-          url: '/categories',
+          url: '/admin/categories',
         },
         {
           label: 'Collections',
           icon: CollectionsMajor,
-          url: '/collections',
+          url: '/admin/collections',
         },
         {
           label: 'Options',
           icon: TroubleshootMajor,
-          url: '/options',
+          url: '/admin/options',
         },
         {
           label: 'Navigations',
           icon: NavigationMajor,
-          url: '/navigations',
+          url: '/admin/navigations',
         },
       ]}
     />
