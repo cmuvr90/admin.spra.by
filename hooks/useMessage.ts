@@ -1,5 +1,5 @@
 import {useDispatch} from 'react-redux'
-import {onChangeMessage} from "@/core/redux/actions/layoutActions";
+import {onChangeMessage} from "@/redux/actions/layoutActions";
 
 export function useMessage() {
   const dispatch = useDispatch()

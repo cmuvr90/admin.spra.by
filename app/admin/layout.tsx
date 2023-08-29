@@ -3,17 +3,12 @@
 import React, {ReactNode, useCallback, useState} from 'react';
 import {Frame} from '@shopify/polaris'
 import {AdminMenu, TopBar} from "@/components";
-import {useSession} from "next-auth/react";
-import {signOut} from "next-auth/react";
+import {useUser} from "@/hooks/useUser";
+import {ManagerMenu} from "@/components/ManagerMenu";
 
 export default function MainLayout({children}: {children: ReactNode}) {
-  const session = useSession();
-
+  const user = useUser();
   const [navigationActive, setNavigationActive] = useState(false);
-
-  const onLogout = async () => {
-    await signOut();
-  }
 
   const onNavigationToggle = useCallback(() => setNavigationActive(v => !v), [])
 
@@ -28,17 +23,16 @@ export default function MainLayout({children}: {children: ReactNode}) {
     accessibilityLabel: 'SPRABY',
   }
 
-  return (
+  return user && (
     <Frame
       logo={logo}
       topBar={
         <TopBar
-          user={session?.data?.user}
+          user={user}
           onNavigationToggle={onNavigationToggle}
-          onLogout={onLogout}
         />
       }
-      navigation={<AdminMenu/>}
+      navigation={user.isAdmin() ? <AdminMenu/> : <ManagerMenu/>}
       showMobileNavigation={navigationActive}
       onNavigationDismiss={onNavigationToggle}
     >
