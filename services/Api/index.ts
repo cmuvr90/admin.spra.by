@@ -1,28 +1,19 @@
 import Fetcher from './Fetcher';
-import { FetchResponseStatus } from '@/core/types/Fetcher';
-import { MainMenu } from '@/core/types/Navigation';
-import { Product } from '@/core/types/Product';
-import { Collection } from '@/core/types/Collection';
+import {FetcherParams, FetchResponseStatus} from "@/services/types/Fetcher";
 
 export default class Api {
   private fetcher;
-  public navigation;
   public products;
-  public collections;
+  public users;
 
-  constructor({ baseUrl }: {
-    baseUrl: string
-  }) {
-    this.fetcher = new Fetcher({ baseUrl });
-    this.navigation = {
-      main: this.navigationMainMenu,
-    };
+  constructor(params: FetcherParams) {
+    this.fetcher = new Fetcher(params);
     this.products = {
       list: this.getProducts,
       get: this.getProduct,
     };
-    this.collections = {
-      get: this.getCollection,
+    this.users = {
+      list: this.getUsers,
     };
   }
 
@@ -30,40 +21,27 @@ export default class Api {
    *
    * @returns
    */
-  private navigationMainMenu = async (): Promise<{
-    data: MainMenu[],
+  private getUsers = async (params: any = {}): Promise<{
+    data: any[],
     status: FetchResponseStatus,
     error: string | null
   }> => {
-    const { data, status, error } = await this.fetcher.get('/navigations/main');
-    return { data, status, error };
+    const {data, status, error} = await this.fetcher.get(`/users`, params);
+    return {data, status, error};
   };
 
-  /**
-   *
-   * @param handle
-   * @returns
-   */
-  private getCollection = async (handle: string): Promise<{
-    data: Collection | null,
-    status: FetchResponseStatus,
-    error: string | null
-  }> => {
-    const { data, status, error } = await this.fetcher.get(`/collections/${handle}`);
-    return { data, status, error };
-  };
 
   /**
    *
    * @returns
    */
   private getProducts = async (params: any): Promise<{
-    data: Product[],
+    data: any[],
     status: FetchResponseStatus,
     error: string | null
   }> => {
-    const { data, status, error } = await this.fetcher.get(`/products`, params);
-    return { data, status, error };
+    const {data, status, error} = await this.fetcher.get(`/products`, params);
+    return {data, status, error};
   };
 
   /**
@@ -71,11 +49,11 @@ export default class Api {
    * @param id
    */
   private getProduct = async (id: string): Promise<{
-    data: Product,
+    data: any,
     status: FetchResponseStatus,
     error: string | null
   }> => {
-    const { data, status, error } = await this.fetcher.get(`/products/${id}`);
-    return { data, status, error };
+    const {data, status, error} = await this.fetcher.get(`/products/${id}`);
+    return {data, status, error};
   };
 }

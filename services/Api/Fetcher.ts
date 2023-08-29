@@ -1,46 +1,84 @@
+import {FetcherMethods, FetcherParams, FetchResponseStatus, FetchResponseType} from "@/services/types/Fetcher";
+
 const qs = require('qs');
-import { FetchResponseStatus, FetchResponseType } from '@/core/types/Fetcher';
 
 export default class Fetcher {
   private readonly baseUrl;
+  private readonly token;
+  private readonly userId;
 
-  constructor({ baseUrl }: { baseUrl: string }) {
+  constructor({baseUrl, token, userId}: FetcherParams) {
     this.baseUrl = baseUrl;
+    this.token = token;
+    this.userId = userId;
   }
 
   /**
    *
    * @param url
    * @param params
-   * @returns
    */
   public get = async (url: string, params = {}): Promise<FetchResponseType> => {
-    return await this.query(url + '?' + qs.stringify(params));
+    return await this.query(url + '?' + qs.stringify(params), params, FetcherMethods.GET);
   };
 
   /**
    *
    * @param url
-   * @param data
-   * @returns
+   * @param params
    */
-  private query = async (url: string, data?: any): Promise<FetchResponseType> => {
+  public post = async (url: string, params = {}) => {
+    return await this.query(url, params, FetcherMethods.POST);
+  }
+
+  /**
+   *
+   * @param url
+   * @param params
+   */
+  public put = async (url: string, params = {}) => {
+    return await this.query(url, params, FetcherMethods.PUT);
+  }
+
+  /**
+   *
+   * @param url
+   * @param params
+   */
+  public delete = async (url: string, params = {}) => {
+    return await this.query(url + '?' + qs.stringify(params), params, FetcherMethods.DELETE);
+  }
+
+  /**
+   *
+   * @param url
+   * @param data
+   * @param method
+   */
+  private query = async (url: string, data: any, method: FetcherMethods,): Promise<FetchResponseType> => {
     try {
+
+      const headers: {[key: string]: string} = {};
+      if (this.token) headers['token'] = this.token;
+      if (this.userId) headers['userId'] = this.userId;
+
       const response = await fetch(`${this.baseUrl}${url}`, {
+        headers,
         next: {
           revalidate: 3000,
         },
       });
 
-      if (!response.ok) throw new Error('post not found');
-
       const responseData = await response.json();
 
-      if (responseData?.error) throw new Error(responseData.error);
+      if (response.ok) {
+        return {data: responseData?.data ?? null, status: responseData?.status ?? FetchResponseStatus.SUCCESS, error: null};
+      } else {
+        throw new Error(responseData?.message || 'Error');
+      }
 
-      return { data: responseData?.data ?? null, status: responseData?.status ?? FetchResponseStatus.SUCCESS, error: null };
     } catch (e: any) {
-      return { data: null, error: `${e?.message || e}`, status: FetchResponseStatus.ERROR };
+      return {data: null, error: `${e?.message || e}`, status: FetchResponseStatus.ERROR};
     }
   };
 }

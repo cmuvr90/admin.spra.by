@@ -1,6 +1,6 @@
 import type {User as AuthUser} from "next-auth";
 import {signOut} from "next-auth/react";
-import {UserRole} from "@/services/types";
+import {UserRole} from "@/services/types/User";
 
 export class User {
   private user;
