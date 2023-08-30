@@ -25,7 +25,7 @@ export const onChangeLoading = (state: boolean = true) => ({
  * @param duration
  */
 export const onChangeMessage = (
-  message: string | null | {[key: string]: string} = null,
+  message: string | null | { [key: string]: string } = null,
   error: boolean = false,
   duration: number = 3000) => {
 
@@ -138,11 +138,23 @@ export type Modal = {
   hideSection: boolean
 }
 
-export type  TopBar = {
+export type TopBar = {
   active: boolean,
-  title: string | null,
-  saveAction: (() => any) | null,
-  discardAction: (() => any) | null,
+  title?: string,
+  saveAction?: {
+    url?: string;
+    content?: string;
+    loading?: boolean;
+    disabled?: boolean;
+    onAction?(): void;
+  },
+  discardAction?: {
+    url?: string;
+    content?: string;
+    loading?: boolean;
+    disabled?: boolean;
+    onAction?(): void;
+  },
   alignContentFlush: boolean,
   fullWidth: boolean,
   contextControl: string | null,

@@ -34,11 +34,9 @@ const initialState: LayoutState = {
     hideSection: false
   },
   topBar: {
+    title: 'Save changes?',
     active: false,
-    title: null,
-    saveAction: null,
-    discardAction: null,
-    alignContentFlush: false,
+    alignContentFlush: true,
     fullWidth: true,
     contextControl: null,
     secondaryMenu: null,

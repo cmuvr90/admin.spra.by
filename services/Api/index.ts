@@ -1,18 +1,26 @@
 import Fetcher from './Fetcher';
-import {FetcherParams, FetchResponseStatus} from "@/services/types/Fetcher";
+import {FetchResponseStatus} from "@/services/types/Fetcher";
+import Config from "@/config";
 
 export default class Api {
   private fetcher;
   public products;
   public users;
 
-  constructor(params: FetcherParams) {
-    this.fetcher = new Fetcher(params);
+  constructor(params: {}) {
+    this.fetcher = new Fetcher({
+      baseUrl: Config.API_BASE_URL,
+      token: Config.API_TOKEN,
+      ...params
+    });
+
     this.products = {
       list: this.getProducts,
       get: this.getProduct,
     };
+    
     this.users = {
+      get: this.getUser,
       list: this.getUsers,
     };
   }
@@ -27,6 +35,19 @@ export default class Api {
     error: string | null
   }> => {
     const {data, status, error} = await this.fetcher.get(`/users`, params);
+    return {data, status, error};
+  };
+
+  /**
+   *
+   * @returns
+   */
+  private getUser = async (id: string): Promise<{
+    data: any,
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const {data, status, error} = await this.fetcher.get(`/users/${id}`);
     return {data, status, error};
   };
 
