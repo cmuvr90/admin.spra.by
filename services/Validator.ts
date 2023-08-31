@@ -1,0 +1,121 @@
+import {ObjectSchema} from "joi";
+
+export class Validator {
+
+  static validate = (joiScheme: ObjectSchema, object: any) => {
+    const data = joiScheme.validate(object, {abortEarly: false});
+    return {
+      errors: data?.error?.details.reduce((acc: { [key: string]: string }, i) => {
+        acc[i.path[0]] = i.message.replace(/^"[^"]+" /, '').trim()
+        return acc;
+      }, {}),
+      value: data.value
+    }
+  }
+
+  static createScheme = (joiScheme: ObjectSchema, locale = 'en'): ObjectSchema => {
+    if (locale === 'ru') joiScheme = joiScheme.prefs({messages: ru})
+    return joiScheme.options({stripUnknown: true});
+  }
+}
+
+const ru = {
+  "any.unknown": "Неизвестное поле",
+  "any.invalid": "Значение недопустимо",
+  "any.empty": "Не должно быть пустым",
+  "any.required": "Обязательное поле",
+  "any.allowOnly": "Должно быть одним из [{#valids}]",
+  "any.default": "Ошибка возвращаемого значения для 'default'",
+  "alternatives.base": "Не соответствует ни одной из альтернатив",
+  "alternatives.types": "Ошибка в альтернативных типах: [{#types}]",
+  "alternatives.match": "Нет соответствия для '{#patternLabel}'",
+  "alternatives.unmatch": "Не соответствует ни одному альтернативному согласованию",
+  "array.base": "Должен быть массив",
+  "array.includes": "В позиции {#pos} нет соответствия требованиям",
+  "array.includesSingle": "В позиции {#pos} не соответствует требованиям одиночного совпадения",
+  "array.includesOne": "В позиции {#pos} не соответствует требованиям как минимум одного совпадения",
+  "array.includesOneSingle": "В позиции {#pos} не соответствует требованиям одиночного совпадения как минимум одного совпадения",
+  "array.includesRequiredUnknowns": "В позиции {#pos} не известен, какое значение требуется для совпадения",
+  "array.includesRequiredBoth": "В позиции {#pos} нет соответствия требованиям одиночного совпадения и требуется значение",
+  "array.includesRequired": "В позиции {#pos} не соответствует требованиям одиночного совпадения и требуется значение",
+  "array.excludes": "В позиции {#pos} содержит значение, которое было исключено",
+  "array.excludesSingle": "В позиции {#pos} содержит значение, которое было исключено как одиночное совпадение",
+  "array.min": "Должно содержать как минимум {#limit} элементов",
+  "array.max": "Должно содержать не более {#limit} элементов",
+  "array.length": "Должно содержать {#limit} элементов",
+  "array.orderedLength": "Должно содержать не более {#limit} элементов",
+  "array.ref": "Ссылка на неправильное количество элементов",
+  "binary.base": "Должно быть бинарным",
+  "binary.min": "Должно быть не менее {#limit} байт",
+  "binary.max": "Должно быть не более {#limit} байт",
+  "binary.length": "Должно быть {#limit} байт",
+  "date.base": "Должно быть датой",
+  "date.format": "Должно быть в формате '{#format}'",
+  "date.strict": "Должно быть строгое соответствие формату '{#format}'",
+  "date.min": "Должно быть позднее {#limit}",
+  "date.max": "Должно быть ранее {#limit}",
+  "date.isoDate": "Должно быть валидной датой ISO 8601",
+  "date.timestamp.javascript": "Должно быть временной меткой или числом миллисекунд",
+  "date.timestamp.unix": "Должно быть временной меткой или числом секунд",
+  "date.ref": "Ссылка на неправильное дату",
+  "function.base": "Должно быть функцией",
+  "function.arity": "Должно содержать {#n} аргумент(а/ов)",
+  "function.class": "Должно быть классом",
+  "function.maxArity": "Должно содержать не более {#n} аргументов",
+  "lazy.base": "Параметр schema не должен быть ленивым",
+  "lazy.schema": "Функция schema должна вернуть схему",
+  "number.base": "Должно быть числом",
+  "number.min": "Должно быть не меньше {#limit}",
+  "number.max": "Должно быть не больше {#limit}",
+  "number.less": "Должно быть менее {#limit}",
+  "number.greater": "Должно быть больше {#limit}",
+  "number.integer": "Должно быть целым числом",
+  "number.precision": "Должно иметь не более {#limit} знаков после запятой",
+  "number.ref": "Ссылка на неправильное число",
+  "number.multiple": "Должно быть кратным {#multiple}",
+  "object.base": "Должен быть объект",
+  "object.child": "Ошибка в дочернем '{#childLabel}'",
+  "object.min": "Должен содержать как минимум {#limit} ключ(а/ей)",
+  "object.max": "Должен содержать не более {#limit} ключ(а/ей)",
+  "object.length": "Должен содержать {#limit} ключ(а/ей)",
+  "object.allowUnknown": "Ключ '{#label}' не разрешен",
+  "object.with": "Пропущен требуемый партнер '{#peer}'",
+  "object.without": "Ключ '{#main}' конфликтует с исключенным ключом '{#peer}'",
+  "object.missing": "Должен содержать как минимум один из {#peers}",
+  "object.nand": "Ключ '{#main}' запрещен. Один из {#peers} обязателен",
+  "object.or": "Должен содержать один из {#peers}",
+  "object.xor": "Должен содержать только один из {#peers}",
+  "object.and": "Должен содержать все {#present} без {#missing}",
+  "object.pattern.match": "Ключ '{#name}' не соответствует требованиям",
+  "object.refType": "Ссылка на неправильный тип ключа '{#ref}'",
+  "string.base": "Должна быть строкой",
+  "string.min": "Должна содержать как минимум {#limit} символ(ов)",
+  "string.max": "Должна содержать не более {#limit} символ(ов)",
+  "string.length": "Должна содержать {#limit} символ(ов)",
+  "string.alphanum": "Должна содержать только буквы и цифры",
+  "string.token": "Должна содержать только буквы, цифры и подчеркивание",
+  "string.regex.base": "Сообщение об ошибке не установлено для regex",
+  "string.regex.name": "Ключ '{#name}' не соответствует требованиям",
+  "string.regex.invert.base": "Сообщение об ошибке не установлено для regex",
+  "string.regex.invert.name": "Ключ '{#name}' не соответствует требованиям",
+  "string.email": "Должна быть действительным адресом электронной почты",
+  "string.uri": "Должна быть действительным URI",
+  "string.uriRelativeOnly": "Должна быть действительным относительным URI",
+  "string.uriCustomScheme": "Должна быть действительным URI с схемой, соответствующей требованиям {#scheme}",
+  "string.isoDate": "Должна быть валидной датой ISO 8601",
+  "string.isoDuration": "Должна быть валидной длительностью ISO 8601",
+  "string.guid": "Должна быть действительной глобальной уникальной идентификационной строкой",
+  "string.hex": "Должна содержать только шестнадцатеричные символы",
+  "string.hexAlign": "Должна быть шестнадцатеричной строкой в выравнивании байтов",
+  "string.base64": "Должна быть действительной строкой base64",
+  "string.dataUri": "Должна быть действительной строкой data-uri",
+  "string.hostname": "Должна быть действительным именем хоста",
+  "string.normalize": "Должна быть валидной нормализованной строкой",
+  "string.lowercase": "Должна содержать только строчные буквы",
+  "string.uppercase": "Должна содержать только заглавные буквы",
+  "string.trim": "Должна быть обрезанной строкой",
+  "string.creditCard": "Должна быть действительной кредитной картой",
+  "string.ref": "Ссылка на неправильную строку",
+  "symbol.base": "Должен быть символом",
+  "symbol.map": "Должен быть одним из {#map}"
+}

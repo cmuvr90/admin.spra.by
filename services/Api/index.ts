@@ -1,6 +1,7 @@
 import Fetcher from './Fetcher';
 import {FetchResponseStatus} from "@/services/types/Fetcher";
 import Config from "@/config";
+import {User} from "@/services/types/User";
 
 export default class Api {
   private fetcher;
@@ -30,7 +31,7 @@ export default class Api {
    * @returns
    */
   private getUsers = async (params: any = {}): Promise<{
-    data: any[],
+    data: User[],
     status: FetchResponseStatus,
     error: string | null
   }> => {
@@ -43,7 +44,7 @@ export default class Api {
    * @returns
    */
   private getUser = async (id: string): Promise<{
-    data: any,
+    data: User | null,
     status: FetchResponseStatus,
     error: string | null
   }> => {

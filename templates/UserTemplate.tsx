@@ -4,8 +4,10 @@ import React, {useEffect, useState} from 'react'
 import {Page, Card, Layout, FormLayout, TextField} from '@shopify/polaris'
 import '@shopify/polaris/build/esm/styles.css'
 import {useSaveBar} from "@/hooks";
+import {User as UserInterface} from "@/services/types/User";
+import {User} from "@/services/User";
 
-export const UserTemplate = ({user: defaultUser = {}}: { user: any }) => {
+export const UserTemplate = ({user: defaultUser, onUpdate}: Props) => {
   const saveBar = useSaveBar(defaultUser, onSave, onDiscard);
 
   const [user, setUser] = useState(defaultUser);
@@ -18,12 +20,14 @@ export const UserTemplate = ({user: defaultUser = {}}: { user: any }) => {
   }, [user])
 
   async function onDiscard() {
-    console.log('discard');
+    setErrors({});
     setUser(defaultUser);
   }
 
   async function onSave() {
-    console.log('SAVE');
+    const {errors} = User.validate(user);
+    setErrors(errors ?? {});
+    if (onUpdate && !errors) await onUpdate(user)
   }
 
   return <Page title={defaultUser.firstName}>
@@ -61,4 +65,9 @@ export const UserTemplate = ({user: defaultUser = {}}: { user: any }) => {
       </Layout.Section>
     </Layout>
   </Page>
+}
+
+type Props = {
+  user: UserInterface,
+  onUpdate?(value: UserInterface): Promise<any>
 }

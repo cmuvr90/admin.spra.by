@@ -2,10 +2,11 @@
 
 import React, {useState, useCallback} from 'react'
 import {TopBar as TopBarPolaris} from '@shopify/polaris'
+import {User as AuthUser} from "next-auth";
 import {User} from "@/services/User";
 
 type Props = {
-  user: User | null,
+  user: AuthUser,
   onNavigationToggle?: () => void;
 }
 
@@ -19,8 +20,8 @@ export const TopBar = ({user, onNavigationToggle}: Props) => {
 
   const userMenuMarkup = user && (
     <TopBarPolaris.UserMenu
-      name={user.getRole()}
-      detail={user.getEmail()}
+      name={user.role}
+      detail={user.email}
       initials='D'
       open={userMenuActive}
       onToggle={toggleUserMenuActive}
@@ -29,7 +30,7 @@ export const TopBar = ({user, onNavigationToggle}: Props) => {
           items: [
             {
               content: 'Logout',
-              onAction: user.onLogout,
+              onAction: User.onLogout,
             },
           ],
         },

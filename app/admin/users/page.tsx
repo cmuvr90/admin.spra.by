@@ -3,8 +3,9 @@ import Api from "@/services/Api";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/pages/api/auth/[...nextauth]";
 import {FetchResponseStatus} from "@/services/types/Fetcher";
+import {User} from "@/services/types/User";
 
-let users: any[] = [];
+let users: User[] = [];
 
 export default async function Users() {
   const session = await getServerSession(authOptions);

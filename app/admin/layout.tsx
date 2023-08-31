@@ -8,6 +8,7 @@ import {useSelector} from "react-redux";
 import {Storage} from "@/redux/store";
 import {useTopBar, useUser} from "@/hooks";
 import {usePathname, useSearchParams} from "next/navigation";
+import {User} from "@/services/User";
 
 export default function MainLayout({children}: { children: ReactNode }) {
   const topBarHook = useTopBar();
@@ -57,7 +58,7 @@ export default function MainLayout({children}: { children: ReactNode }) {
           onNavigationToggle={onNavigationToggle}
         />
       }
-      navigation={user.isAdmin() ? <AdminMenu/> : <ManagerMenu/>}
+      navigation={User.isAdmin(user.role) ? <AdminMenu/> : <ManagerMenu/>}
       showMobileNavigation={navigationActive}
       onNavigationDismiss={onNavigationToggle}
     >
