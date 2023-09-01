@@ -19,6 +19,6 @@ export class User {
       lastName: Joi.string().min(1).max(30).required(),
       email: Joi.string().email({tlds: {allow: ['com', 'net', 'org']}}).required(),
       role: Joi.string().valid(...Object.values(UserRole)).required()
-    }), 'ru')
+    }))
   }
 }

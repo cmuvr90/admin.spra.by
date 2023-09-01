@@ -3,21 +3,24 @@
 import React, {useEffect, useState} from 'react'
 import {Page, Card, Layout, FormLayout, TextField} from '@shopify/polaris'
 import '@shopify/polaris/build/esm/styles.css'
-import {useSaveBar} from "@/hooks";
+import {useMessage, useSaveBar} from "@/hooks";
 import {User as UserInterface} from "@/services/types/User";
 import {User} from "@/services/User";
 
-export const UserTemplate = ({user: defaultUser, onUpdate}: Props) => {
-  const saveBar = useSaveBar(defaultUser, onSave, onDiscard);
+export const UserTemplate = ({user: userData, onUpdate}: Props) => {
+  const saveBar = useSaveBar(onSave, onDiscard);
+  const toast = useMessage();
 
-  const [user, setUser] = useState(defaultUser);
+  const [defaultUser, setDefaultUser] = useState(userData);
+  const [user, setUser] = useState(userData);
   const [errors, setErrors] = useState<{ [key: string]: string | boolean }>({});
 
   const onChange = (value: { [key: string]: string }) => setUser((user: any) => ({...user, ...value}))
 
   useEffect(() => {
-    saveBar.onChange(user);
-  }, [user])
+    const isEqual = saveBar.onChange(defaultUser, user);
+    if (isEqual) setErrors({});
+  }, [user, defaultUser])
 
   async function onDiscard() {
     setErrors({});
@@ -27,7 +30,18 @@ export const UserTemplate = ({user: defaultUser, onUpdate}: Props) => {
   async function onSave() {
     const {errors} = User.validate(user);
     setErrors(errors ?? {});
-    if (onUpdate && !errors) await onUpdate(user)
+
+    if (onUpdate && !errors) {
+      const data = await onUpdate(user);
+
+      if (data) {
+        setDefaultUser(data);
+        setUser(data);
+        toast.info('Saved');
+      } else {
+        toast.error('Error')
+      }
+    }
   }
 
   return <Page title={defaultUser.firstName}>

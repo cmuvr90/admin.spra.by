@@ -14,6 +14,7 @@ export function useTopBar(primaryAction?: any, secondaryAction?: any) {
   const change = (value: any) => dispatch(onChangeTopBar({
     saveAction: primaryAction,
     discardAction: secondaryAction,
+    fullWidth: false,
     ...value,
   }))
 

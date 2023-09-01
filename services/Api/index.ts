@@ -19,10 +19,11 @@ export default class Api {
       list: this.getProducts,
       get: this.getProduct,
     };
-    
+
     this.users = {
       get: this.getUser,
       list: this.getUsers,
+      update: this.updateUser,
     };
   }
 
@@ -30,7 +31,7 @@ export default class Api {
    *
    * @returns
    */
-  private getUsers = async (params: any = {}): Promise<{
+  private getUsers = async (params: any = null): Promise<{
     data: User[],
     status: FetchResponseStatus,
     error: string | null
@@ -52,6 +53,19 @@ export default class Api {
     return {data, status, error};
   };
 
+  /**
+   *
+   * @param id
+   * @param params
+   */
+  private updateUser = async (id: string, params: User): Promise<{
+    data: User | null,
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const {data, status, error} = await this.fetcher.put(`/users/${id}`, params);
+    return {data, status, error};
+  }
 
   /**
    *

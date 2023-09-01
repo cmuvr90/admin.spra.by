@@ -18,7 +18,7 @@ export default class Fetcher {
    * @param url
    * @param params
    */
-  public get = async (url: string, params = {}): Promise<FetchResponseType> => {
+  public get = async (url: string, params: any = null): Promise<FetchResponseType> => {
     return await this.query(url + '?' + qs.stringify(params), params, FetcherMethods.GET);
   };
 
@@ -27,7 +27,7 @@ export default class Fetcher {
    * @param url
    * @param params
    */
-  public post = async (url: string, params = {}) => {
+  public post = async (url: string, params: any = null) => {
     return await this.query(url, params, FetcherMethods.POST);
   }
 
@@ -36,7 +36,7 @@ export default class Fetcher {
    * @param url
    * @param params
    */
-  public put = async (url: string, params = {}) => {
+  public put = async (url: string, params: any = null) => {
     return await this.query(url, params, FetcherMethods.PUT);
   }
 
@@ -45,7 +45,7 @@ export default class Fetcher {
    * @param url
    * @param params
    */
-  public delete = async (url: string, params = {}) => {
+  public delete = async (url: string, params: any = null) => {
     return await this.query(url + '?' + qs.stringify(params), params, FetcherMethods.DELETE);
   }
 
@@ -58,21 +58,30 @@ export default class Fetcher {
   private query = async (url: string, data: any, method: FetcherMethods,): Promise<FetchResponseType> => {
     try {
 
-      const headers: {[key: string]: string} = {};
+      const headers: { [key: string]: string } = {
+        "Content-Type": "application/json"
+      };
       if (this.token) headers['token'] = this.token;
       if (this.userId) headers['userId'] = this.userId;
 
-      const response = await fetch(`${this.baseUrl}${url}`, {
+      const queryData: { [key: string]: any } = {
+        method,
         headers,
-        next: {
-          revalidate: 3000,
-        },
-      });
+        // next: {
+        //   revalidate: 3000,
+        // },
+      }
 
+      if (data) queryData.body = JSON.stringify(data)
+      const response = await fetch(`${this.baseUrl}${url}`, queryData);
       const responseData = await response.json();
 
       if (response.ok) {
-        return {data: responseData?.data ?? null, status: responseData?.status ?? FetchResponseStatus.SUCCESS, error: null};
+        return {
+          data: responseData?.data ?? null,
+          status: responseData?.status ?? FetchResponseStatus.SUCCESS,
+          error: null
+        };
       } else {
         throw new Error(responseData?.message || 'Error');
       }
