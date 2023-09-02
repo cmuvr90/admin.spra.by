@@ -7,11 +7,13 @@ import {DeleteMajor} from "@shopify/polaris-icons";
 import {User} from "@/services/types/User";
 import {getUsers} from "@/serverActions/user";
 import {useMessage} from "@/hooks";
+import {useRouter} from "next/navigation";
 
 export const UsersTemplate = () => {
+  const router = useRouter();
   const toast = useMessage();
   const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true)
@@ -31,7 +33,7 @@ export const UsersTemplate = () => {
     title={'Users'}
     primaryAction={{
       content: 'Create',
-      onAction: () => {}
+      onAction: () => router.push('/admin/users/create')
     }}>
     <Card padding={'0'}>
       <IndexTable
@@ -45,7 +47,7 @@ export const UsersTemplate = () => {
       >
         {
           users.map(({id, email}, index) => (
-            <IndexTable.Row id={id} key={id} position={index}>
+            <IndexTable.Row id={`${index}`} key={index} position={index}>
               <IndexTable.Cell>
                 <Button monochrome plain url={`/admin/users/${id}`}>{email}</Button>
               </IndexTable.Cell>
@@ -55,7 +57,6 @@ export const UsersTemplate = () => {
             </IndexTable.Row>
           ))
         }
-
       </IndexTable>
     </Card>
   </Page>

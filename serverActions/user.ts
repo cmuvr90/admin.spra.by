@@ -24,8 +24,17 @@ export async function getUsers(): Promise<UserInterface[]> {
 }
 
 export async function updateUser(value: UserInterface): Promise<UserInterface | null> {
+  if (!value?.id) throw Error('id is required');
   const api = await getAuthApi();
   const {data, status, error} = await api.users.update(value.id, value);
+  if (status === FetchResponseStatus.ERROR) throw Error(error || 'Error');
+  revalidatePath(`/`)
+  return data;
+}
+
+export async function createUser(value: UserInterface): Promise<UserInterface | null> {
+  const api = await getAuthApi();
+  const {data, status, error} = await api.users.create(value);
   if (status === FetchResponseStatus.ERROR) throw Error(error || 'Error');
   revalidatePath(`/`)
   return data;

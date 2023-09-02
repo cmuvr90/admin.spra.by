@@ -19,6 +19,7 @@ export default class Api {
     this.users = {
       get: this.getUser,
       list: this.getUsers,
+      create: this.createUser,
       update: this.updateUser,
     };
   }
@@ -60,6 +61,19 @@ export default class Api {
     error: string | null
   }> => {
     const {data, status, error} = await this.fetcher.put(`/users/${id}`, params);
+    return {data, status, error};
+  }
+
+  /**
+   *
+   * @param params
+   */
+  private createUser = async (params: User): Promise<{
+    data: User | null,
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const {data, status, error} = await this.fetcher.post(`/users`, params);
     return {data, status, error};
   }
 

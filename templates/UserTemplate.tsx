@@ -6,11 +6,18 @@ import '@shopify/polaris/build/esm/styles.css'
 import {useMessage, useSaveBar} from "@/hooks";
 import {User as UserInterface} from "@/services/types/User";
 import {User} from "@/services/User";
-import {updateUser} from "@/serverActions/user";
-import {revalidatePath} from "next/cache";
+import {createUser, updateUser} from "@/serverActions/user";
+import {useRouter} from "next/navigation";
 
 export const UserTemplate = ({user: userData}: Props) => {
-  const saveBar = useSaveBar(onSave, onDiscard);
+  const router = useRouter();
+  const saveBar = useSaveBar(
+    !!userData?.id ? onUpdate : onCreate,
+    onDiscard,
+    {
+      primaryContent: !!userData?.id ? 'Save' : 'Create', secondaryContent: 'Discard'
+    }
+  );
   const toast = useMessage();
 
   const [defaultUser, setDefaultUser] = useState(userData);
@@ -29,7 +36,7 @@ export const UserTemplate = ({user: userData}: Props) => {
     setUser(defaultUser);
   }
 
-  async function onSave() {
+  async function onUpdate() {
     const {errors} = User.validate(user);
     setErrors(errors ?? {});
 
@@ -38,6 +45,27 @@ export const UserTemplate = ({user: userData}: Props) => {
         const data = await updateUser(user);
         setDefaultUser(user);
         toast.info('Saved');
+      } catch (e) {
+        toast.error((e as Error).message || 'error')
+      }
+    }
+  }
+
+  async function onCreate() {
+    let validateErrorData = User.validatePass(user);
+    if (!validateErrorData?.errors) validateErrorData = User.validate(user);
+
+    setErrors(validateErrorData?.errors ?? {});
+
+    if (!validateErrorData?.errors) {
+      try {
+        const data = await createUser(user);
+        if (data) {
+          setDefaultUser(data);
+          setUser(data);
+          router.push(`${data.id}`)
+        }
+        toast.info('Created');
       } catch (e) {
         toast.error((e as Error).message || 'error')
       }
@@ -74,6 +102,27 @@ export const UserTemplate = ({user: userData}: Props) => {
                 onChange={email => onChange({email})}
               />
             </FormLayout.Group>
+            {
+              !user.id &&
+              <FormLayout.Group>
+                <TextField
+                  autoComplete={'off'}
+                  label={'Password'}
+                  value={user.password}
+                  type={'password'}
+                  error={errors?.password}
+                  onChange={password => onChange({password})}
+                />
+                <TextField
+                  autoComplete={'off'}
+                  label={'Confirm password'}
+                  type={'password'}
+                  value={user.confirmPassword}
+                  error={errors?.confirmPassword}
+                  onChange={confirmPassword => onChange({confirmPassword})}
+                />
+              </FormLayout.Group>
+            }
           </FormLayout>
         </Card>
       </Layout.Section>

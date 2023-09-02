@@ -1,14 +1,21 @@
 import {useTopBar} from "@/hooks/useTopbar";
 import {isEqualDeep} from "@/utils";
 
-export function useSaveBar(onSave: () => Promise<void>, onDiscard: () => Promise<void>) {
+export function useSaveBar(
+  onSave: () => Promise<void>,
+  onDiscard: () => Promise<void>,
+  options: { primaryContent: string, secondaryContent: string } = {
+    primaryContent: 'Save',
+    secondaryContent: 'Discard'
+  }
+) {
   const topBar = useTopBar(
     {
-      content: 'Save',
+      content: options.primaryContent,
       onAction: onSaveAction,
     },
     {
-      content: 'Discard',
+      content: options.secondaryContent,
       onAction: onDiscardAction,
     },
   );
