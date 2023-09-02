@@ -1,7 +1,7 @@
 'use client';
 
 import React, {ReactNode, useCallback, useEffect, useState} from 'react';
-import {ContextualSaveBar, Frame, Loading, Toast} from '@shopify/polaris'
+import {ContextualSaveBar, Frame, Loading, Modal, Toast} from '@shopify/polaris'
 import {AdminMenu, TopBar} from "@/components";
 import {ManagerMenu} from "@/components/ManagerMenu";
 import {useDispatch, useSelector} from "react-redux";
@@ -9,7 +9,7 @@ import {Storage} from "@/redux/store";
 import {useTopBar, useUser} from "@/hooks";
 import {usePathname, useSearchParams} from "next/navigation";
 import {User} from "@/services/User";
-import {onChangeMessage} from "@/redux/actions/layoutActions";
+import {onChangeMessage, onResetModal} from "@/redux/actions/layoutActions";
 
 export default function MainLayout({children}: { children: ReactNode }) {
   const dispatch = useDispatch();
@@ -24,12 +24,28 @@ export default function MainLayout({children}: { children: ReactNode }) {
   const loading = useSelector((state: Storage) => state.layout.loading)
   const topBar = useSelector((state: Storage) => state.layout.topBar)
   const message = useSelector((state: Storage) => state.layout.message)
+  const modal = useSelector((state: Storage) => state.layout.modal)
 
   const loadingMarkup = loading ? <Loading/> : null;
 
   const toastMarkup = message ? message.content.map(i =>
     <Toast key={i} {...message} content={i} onDismiss={() => dispatch(onChangeMessage())}/>,
   ) : null
+
+  const modalMarkup = <Modal
+    fullScreen={modal.fullScreen}
+    large={modal.large}
+    open={modal.open}
+    onClose={() => dispatch(onResetModal())}
+    title={modal.title}
+    primaryAction={modal.primaryAction}
+    secondaryActions={modal.secondaryActions}
+    loading={modal.loading}
+  >
+    {
+      modal.hideSection ? modal.content : <Modal.Section>{modal.content}</Modal.Section>
+    }
+  </Modal>
 
   const contextualSaveBarMarkup = topBar.active ? <ContextualSaveBar
     message={topBar.title}
@@ -72,7 +88,7 @@ export default function MainLayout({children}: { children: ReactNode }) {
       {loadingMarkup}
       {contextualSaveBarMarkup}
       {toastMarkup}
-      {/*{modalMarkup}*/}
+      {modalMarkup}
       {children}
     </Frame>
   );

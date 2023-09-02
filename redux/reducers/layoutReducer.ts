@@ -24,11 +24,11 @@ const initialState: LayoutState = {
     duration: 3000,
   },
   modal: {
+    fullScreen: false,
     large: false,
     open: false,
     title: null,
     content: null,
-    primaryAction: null,
     secondaryActions: [],
     loading: false,
     hideSection: false
@@ -48,7 +48,7 @@ const initialState: LayoutState = {
  * @param state
  * @param action
  */
-export const layoutReducer = (state = initialState, action: {type: any; payload: {[key: string | number]: any}}) => {
+export const layoutReducer = (state = initialState, action: { type: any; payload: { [key: string | number]: any } }) => {
   switch (action.type) {
     case ON_CHANGE_LOADING:
       return {...state, loading: action.payload}
@@ -72,7 +72,7 @@ export const layoutReducer = (state = initialState, action: {type: any; payload:
         ...state,
         modal: {
           ...state.modal,
-          secondaryActions: state.modal.secondaryActions.map((i, index) =>
+          secondaryActions: (state.modal?.secondaryActions ?? []).map((i, index) =>
             index === action.payload.index - 1 ? {...i, ...action.payload.value} : {...i}),
         },
       }

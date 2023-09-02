@@ -1,3 +1,5 @@
+import {ComplexAction} from "@shopify/polaris";
+
 export const ON_CHANGE_LOADING = 'ON_CHANGE_LOADING'
 export const ON_CHANGE_MESSAGE = 'ON_CHANGE_MESSAGE'
 
@@ -122,18 +124,19 @@ export const onChangeTopBarPrimaryAction = (params: any = {}) => ({
  *
  * @param params
  */
-export const onChangeTopBarSecondayAction = (params: any = {}) => ({
+export const onChangeTopBarSecondaryAction = (params: any = {}) => ({
   type: ON_CHANGE_TOP_BAR_SECONDARY_ACTION,
   payload: {...params},
 })
 
 export type Modal = {
+  fullScreen: boolean,
   large: boolean,
   open: boolean,
   title: string | null,
   content: string | null,
-  primaryAction: (() => any) | null,
-  secondaryActions: (() => any)[],
+  primaryAction?: ComplexAction,
+  secondaryActions?: ComplexAction[],
   loading: boolean,
   hideSection: boolean
 }

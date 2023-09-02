@@ -2,7 +2,7 @@ import {useDispatch} from 'react-redux'
 import {
   onChangeTopBar,
   onChangeTopBarPrimaryAction,
-  onChangeTopBarSecondayAction,
+  onChangeTopBarSecondaryAction,
   onResetTopBar
 } from "@/redux/actions/layoutActions";
 
@@ -27,7 +27,7 @@ export function useTopBar(primaryAction?: any, secondaryAction?: any) {
   const unloadingPrimaryAction = () => loadingPrimaryAction(false)
 
 
-  const loadingSecondaryAction = (value = true) => dispatch(onChangeTopBarSecondayAction({loading: value}))
+  const loadingSecondaryAction = (value = true) => dispatch(onChangeTopBarSecondaryAction({loading: value}))
 
 
   const unloadingSecondaryAction = () => loadingSecondaryAction(false)

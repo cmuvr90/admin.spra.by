@@ -1,16 +1,18 @@
 'use client';
 
 import React, {useEffect, useState} from 'react'
-import {Page, Card, Layout, FormLayout, TextField} from '@shopify/polaris'
+import {Page, Card, Layout, FormLayout, TextField, PageActions} from '@shopify/polaris'
 import '@shopify/polaris/build/esm/styles.css'
 import {useMessage, useSaveBar} from "@/hooks";
 import {User as UserInterface} from "@/services/types/User";
 import {User} from "@/services/User";
-import {createUser, updateUser} from "@/serverActions/user";
+import {createUser, deleteUser, updateUser} from "@/serverActions/user";
 import {useRouter} from "next/navigation";
+import {useConfirm} from "@/hooks/useConfirm";
 
 export const UserTemplate = ({user: userData}: Props) => {
   const router = useRouter();
+  const confirm = useConfirm()
   const saveBar = useSaveBar(
     !!userData?.id ? onUpdate : onCreate,
     onDiscard,
@@ -63,12 +65,22 @@ export const UserTemplate = ({user: userData}: Props) => {
         if (data) {
           setDefaultUser(data);
           setUser(data);
-          router.push(`${data.id}`)
+          router.replace(`/admin/users/${data.id}`)
         }
         toast.info('Created');
       } catch (e) {
         toast.error((e as Error).message || 'error')
       }
+    }
+  }
+
+  async function onDelete(id: string) {
+    try {
+      const data = await deleteUser(id);
+      toast.info('Deleted');
+      router.push(`/admin/users`);
+    } catch (e) {
+      toast.error((e as Error).message || 'error')
     }
   }
 
@@ -126,6 +138,18 @@ export const UserTemplate = ({user: userData}: Props) => {
           </FormLayout>
         </Card>
       </Layout.Section>
+      {
+        !!user?.id &&
+        <Layout.Section>
+          <PageActions
+            secondaryActions={[{
+              content: 'Delete',
+              destructive: true,
+              onAction: () => {confirm.open(() => onDelete(user?.id ?? ''))},
+            }]}
+          />
+        </Layout.Section>
+      }
     </Layout>
   </Page>
 }

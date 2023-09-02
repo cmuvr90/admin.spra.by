@@ -39,3 +39,11 @@ export async function createUser(value: UserInterface): Promise<UserInterface | 
   revalidatePath(`/`)
   return data;
 }
+
+export async function deleteUser(id: string): Promise<any> {
+  const api = await getAuthApi();
+  const {data, status, error} = await api.users.delete(id);
+  if (status === FetchResponseStatus.ERROR) throw Error(error || 'Error');
+  revalidatePath(`/`)
+  return data;
+}

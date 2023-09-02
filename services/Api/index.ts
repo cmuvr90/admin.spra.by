@@ -21,6 +21,7 @@ export default class Api {
       list: this.getUsers,
       create: this.createUser,
       update: this.updateUser,
+      delete: this.deleteUser,
     };
   }
 
@@ -74,6 +75,19 @@ export default class Api {
     error: string | null
   }> => {
     const {data, status, error} = await this.fetcher.post(`/users`, params);
+    return {data, status, error};
+  }
+
+  /**
+   *
+   * @param id
+   */
+  private deleteUser = async (id: string): Promise<{
+    data: any,
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const {data, status, error} = await this.fetcher.delete(`/users/${id}`);
     return {data, status, error};
   }
 
