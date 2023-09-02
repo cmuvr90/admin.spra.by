@@ -6,8 +6,10 @@ import '@shopify/polaris/build/esm/styles.css'
 import {useMessage, useSaveBar} from "@/hooks";
 import {User as UserInterface} from "@/services/types/User";
 import {User} from "@/services/User";
+import {updateUser} from "@/serverActions/user";
+import {revalidatePath} from "next/cache";
 
-export const UserTemplate = ({user: userData, onUpdate}: Props) => {
+export const UserTemplate = ({user: userData}: Props) => {
   const saveBar = useSaveBar(onSave, onDiscard);
   const toast = useMessage();
 
@@ -31,15 +33,13 @@ export const UserTemplate = ({user: userData, onUpdate}: Props) => {
     const {errors} = User.validate(user);
     setErrors(errors ?? {});
 
-    if (onUpdate && !errors) {
-      const data = await onUpdate(user);
-
-      if (data) {
-        setDefaultUser(data);
-        setUser(data);
+    if (!errors) {
+      try {
+        const data = await updateUser(user);
+        setDefaultUser(user);
         toast.info('Saved');
-      } else {
-        toast.error('Error')
+      } catch (e) {
+        toast.error((e as Error).message || 'error')
       }
     }
   }
@@ -83,5 +83,4 @@ export const UserTemplate = ({user: userData, onUpdate}: Props) => {
 
 type Props = {
   user: UserInterface,
-  onUpdate?(value: UserInterface): Promise<any>
 }

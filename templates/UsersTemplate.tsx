@@ -1,18 +1,41 @@
 'use client';
 
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {Button, IndexTable, Page, Card} from '@shopify/polaris'
 import '@shopify/polaris/build/esm/styles.css'
 import {DeleteMajor} from "@shopify/polaris-icons";
+import {User} from "@/services/types/User";
+import {getUsers} from "@/serverActions/user";
+import {useMessage} from "@/hooks";
 
-export const UsersTemplate = ({users = []}: { users: any[] }) => {
+export const UsersTemplate = () => {
+  const toast = useMessage();
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  return <Page title={'Users'} primaryAction={{
-    content: 'Create',
-    onAction: () => {}
-  }}>
-    <Card padding={'1'}>
+  useEffect(() => {
+    setLoading(true)
+    getUsersData().finally(() => setLoading(false));
+  }, [])
+
+  const getUsersData = async () => {
+    try {
+      const usersData = await getUsers();
+      setUsers(usersData);
+    } catch (e) {
+      toast.error((e as Error)?.message ?? 'Error');
+    }
+  }
+
+  return <Page
+    title={'Users'}
+    primaryAction={{
+      content: 'Create',
+      onAction: () => {}
+    }}>
+    <Card padding={'0'}>
       <IndexTable
+        loading={loading}
         itemCount={users.length}
         selectable={false}
         headings={[

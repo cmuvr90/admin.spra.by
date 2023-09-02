@@ -8,12 +8,8 @@ export default class Api {
   public products;
   public users;
 
-  constructor(params: {}) {
-    this.fetcher = new Fetcher({
-      baseUrl: Config.API_BASE_URL,
-      token: Config.API_TOKEN,
-      ...params
-    });
+  constructor(headers?: { [key: string]: string } | null) {
+    this.fetcher = new Fetcher({baseUrl: Config.API_BASE_URL, headers});
 
     this.products = {
       list: this.getProducts,

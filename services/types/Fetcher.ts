@@ -18,6 +18,5 @@ export enum FetcherMethods {
 
 export type FetcherParams = {
   baseUrl: string,
-  userId?: string,
-  token?: string
+  headers?: { [key: string]: string } | null
 }

@@ -1,16 +1,21 @@
 import {FetcherMethods, FetcherParams, FetchResponseStatus, FetchResponseType} from "@/services/types/Fetcher";
-
 const qs = require('qs');
 
 export default class Fetcher {
   private readonly baseUrl;
-  private readonly token;
-  private readonly userId;
+  private headers;
 
-  constructor({baseUrl, token, userId}: FetcherParams) {
+  constructor({baseUrl, headers}: FetcherParams) {
     this.baseUrl = baseUrl;
-    this.token = token;
-    this.userId = userId;
+    this.headers = headers ?? {};
+  }
+
+  /**
+   *
+   * @param value
+   */
+  public setHeaders = (value: { [key: string]: string }) => {
+    this.headers = {...this.headers, ...value};
   }
 
   /**
@@ -19,7 +24,8 @@ export default class Fetcher {
    * @param params
    */
   public get = async (url: string, params: any = null): Promise<FetchResponseType> => {
-    return await this.query(url + '?' + qs.stringify(params), params, FetcherMethods.GET);
+    const queryData = params ? '?' + qs.stringify(params) : '';
+    return await this.query(url + queryData, params, FetcherMethods.GET);
   };
 
   /**
@@ -46,7 +52,8 @@ export default class Fetcher {
    * @param params
    */
   public delete = async (url: string, params: any = null) => {
-    return await this.query(url + '?' + qs.stringify(params), params, FetcherMethods.DELETE);
+    const queryData = params ? '?' + qs.stringify(params) : '';
+    return await this.query(url + queryData, params, FetcherMethods.DELETE);
   }
 
   /**
@@ -59,17 +66,17 @@ export default class Fetcher {
     try {
 
       const headers: { [key: string]: string } = {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        ...this.headers
       };
-      if (this.token) headers['token'] = this.token;
-      if (this.userId) headers['userId'] = this.userId;
 
       const queryData: { [key: string]: any } = {
         method,
         headers,
-        // next: {
-        //   revalidate: 3000,
-        // },
+        next: {
+          // cache: 'no-store',
+          revalidate: 3,
+        },
       }
 
       if (data) queryData.body = JSON.stringify(data)
