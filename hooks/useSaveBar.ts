@@ -1,5 +1,5 @@
 import {useTopBar} from "@/hooks/useTopbar";
-import {isEqualDeep} from "@/utils";
+import {isEqual} from "lodash";
 
 export function useSaveBar(
   onSave: () => Promise<void>,
@@ -33,9 +33,9 @@ export function useSaveBar(
   }
 
   const onChange = (before: any, after: any) => {
-    const isEqual = isEqualDeep(before, after)
-    topBar.active(!isEqual);
-    return isEqual;
+    const isEquals = isEqual(before, after)
+    topBar.active(!isEquals);
+    return isEquals;
   }
 
   return {onChange}

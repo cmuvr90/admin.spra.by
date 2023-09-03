@@ -4,6 +4,7 @@ import {useUser} from "@/hooks/useUser";
 import {useSaveBar} from "@/hooks/useSaveBar";
 import {useTopBar} from "@/hooks/useTopbar";
 import {useModal} from "@/hooks/useModal";
+import {usePickerModal} from "@/hooks/usePickerModal";
 
 export {
   useMessage,
@@ -11,5 +12,6 @@ export {
   useUser,
   useSaveBar,
   useTopBar,
-  useModal
+  useModal,
+  usePickerModal
 }

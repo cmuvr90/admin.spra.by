@@ -1,4 +1,6 @@
 import {FetcherMethods, FetcherParams, FetchResponseStatus, FetchResponseType} from "@/services/types/Fetcher";
+import {Obj} from "@/services/types";
+
 const qs = require('qs');
 
 export default class Fetcher {
@@ -23,9 +25,9 @@ export default class Fetcher {
    * @param url
    * @param params
    */
-  public get = async (url: string, params: any = null): Promise<FetchResponseType> => {
-    const queryData = params ? '?' + qs.stringify(params) : '';
-    return await this.query(url + queryData, params, FetcherMethods.GET);
+  public get = async (url: string, params?: Obj): Promise<FetchResponseType> => {
+    const queryData = !!params ? '?' + qs.stringify(params) : '';
+    return await this.query(url + queryData, null, FetcherMethods.GET);
   };
 
   /**
@@ -33,8 +35,8 @@ export default class Fetcher {
    * @param url
    * @param params
    */
-  public post = async (url: string, params: any = null) => {
-    return await this.query(url, params, FetcherMethods.POST);
+  public post = async (url: string, params?: Obj) => {
+    return await this.query(url, params ?? null, FetcherMethods.POST);
   }
 
   /**
@@ -42,8 +44,8 @@ export default class Fetcher {
    * @param url
    * @param params
    */
-  public put = async (url: string, params: any = null) => {
-    return await this.query(url, params, FetcherMethods.PUT);
+  public put = async (url: string, params?: Obj) => {
+    return await this.query(url, params ?? null, FetcherMethods.PUT);
   }
 
   /**
@@ -51,9 +53,9 @@ export default class Fetcher {
    * @param url
    * @param params
    */
-  public delete = async (url: string, params: any = null) => {
+  public delete = async (url: string, params?: Obj) => {
     const queryData = params ? '?' + qs.stringify(params) : '';
-    return await this.query(url + queryData, params, FetcherMethods.DELETE);
+    return await this.query(url + queryData, null, FetcherMethods.DELETE);
   }
 
   /**

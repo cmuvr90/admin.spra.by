@@ -1,49 +1,50 @@
 'use server'
 
-import {Brand as BrandInterface, BrandData} from "@/services/types/Brand";
+import {Category as CategoryInterface} from "@/services/types/Category";
 import AuthApi from "@/services/Api/AuthApi";
 import {FetchResponseStatus} from "@/services/types/Fetcher";
 import {revalidatePath} from "next/cache";
+import {Obj} from "@/services/types";
 
 async function getAuthApi() {
   return await AuthApi.api();
 }
 
-export async function getBrand(id: string): Promise<BrandInterface | null> {
+export async function getCategory(id: string): Promise<CategoryInterface | null> {
   const api = await getAuthApi();
-  const {data, status, error} = await api.brands.get(id);
+  const {data, status, error} = await api.categories.get(id);
   if (status === FetchResponseStatus.ERROR) throw Error(error || 'Error');
   return data;
 }
 
-export async function getBrands(): Promise<BrandInterface[]> {
+export async function getCategories(params?: Obj): Promise<CategoryInterface[]> {
   const api = await getAuthApi();
-  const {data, status, error} = await api.brands.list();
+  const {data, status, error} = await api.categories.list(params);
   if (status === FetchResponseStatus.ERROR) throw Error(error || 'Error');
   return data;
 }
 
-export async function updateBrand(value: BrandData): Promise<BrandInterface | null> {
+export async function updateCategory(value: CategoryInterface): Promise<CategoryInterface | null> {
   if (!value?.id) throw Error('id is required');
 
   const api = await getAuthApi();
-  const {data, status, error} = await api.brands.update(value.id, value);
+  const {data, status, error} = await api.categories.update(value.id, value);
   if (status === FetchResponseStatus.ERROR) throw Error(error || 'Error');
   revalidatePath(`/`)
   return data;
 }
 
-export async function createBrand(value: BrandData): Promise<BrandInterface | null> {
+export async function createCategory(value: CategoryInterface): Promise<CategoryInterface | null> {
   const api = await getAuthApi();
-  const {data, status, error} = await api.brands.create(value);
+  const {data, status, error} = await api.categories.create(value);
   if (status === FetchResponseStatus.ERROR) throw Error(error || 'Error');
   revalidatePath(`/`)
   return data;
 }
 
-export async function deleteBrand(id: string): Promise<any> {
+export async function deleteCategory(id: string): Promise<any> {
   const api = await getAuthApi();
-  const {data, status, error} = await api.brands.delete(id);
+  const {data, status, error} = await api.categories.delete(id);
   if (status === FetchResponseStatus.ERROR) throw Error(error || 'Error');
   revalidatePath(`/`)
   return data;

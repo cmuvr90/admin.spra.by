@@ -4,6 +4,7 @@ import {User as UserInterface} from "@/services/types/User";
 import AuthApi from "@/services/Api/AuthApi";
 import {FetchResponseStatus} from "@/services/types/Fetcher";
 import {revalidatePath} from "next/cache";
+import {Obj} from "@/services/types";
 
 async function getAuthApi() {
   return await AuthApi.api();
@@ -16,9 +17,9 @@ export async function getUser(id: string): Promise<UserInterface | null> {
   return data;
 }
 
-export async function getUsers(): Promise<UserInterface[]> {
+export async function getUsers(params?: Obj): Promise<UserInterface[]> {
   const api = await getAuthApi();
-  const {data, status, error} = await api.users.list();
+  const {data, status, error} = await api.users.list(params);
   if (status === FetchResponseStatus.ERROR) throw Error(error || 'Error');
   return data;
 }
