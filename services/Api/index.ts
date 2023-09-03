@@ -2,11 +2,13 @@ import Fetcher from './Fetcher';
 import {FetchResponseStatus} from "@/services/types/Fetcher";
 import Config from "@/config";
 import {User} from "@/services/types/User";
+import {Brand} from "@/services/types/Brand";
 
 export default class Api {
   private fetcher;
   public products;
   public users;
+  public brands;
 
   constructor(headers?: { [key: string]: string } | null) {
     this.fetcher = new Fetcher({baseUrl: Config.API_BASE_URL, headers});
@@ -22,6 +24,14 @@ export default class Api {
       create: this.createUser,
       update: this.updateUser,
       delete: this.deleteUser,
+    };
+
+    this.brands = {
+      get: this.getBrand,
+      list: this.getBrands,
+      create: this.createBrand,
+      update: this.updateBrand,
+      delete: this.deleteBrand,
     };
   }
 
@@ -90,6 +100,73 @@ export default class Api {
     const {data, status, error} = await this.fetcher.delete(`/users/${id}`);
     return {data, status, error};
   }
+
+  /**
+   *
+   * @returns
+   */
+  private getBrands = async (params: any = null): Promise<{
+    data: Brand[],
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const {data, status, error} = await this.fetcher.get(`/brands`, params);
+    return {data, status, error};
+  };
+
+  /**
+   *
+   * @returns
+   */
+  private getBrand = async (id: string): Promise<{
+    data: Brand | null,
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const {data, status, error} = await this.fetcher.get(`/brands/${id}`);
+    return {data, status, error};
+  };
+
+  /**
+   *
+   * @param id
+   * @param params
+   */
+  private updateBrand = async (id: string, params: Brand): Promise<{
+    data: Brand | null,
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const {data, status, error} = await this.fetcher.put(`/brands/${id}`, params);
+    return {data, status, error};
+  }
+
+  /**
+   *
+   * @param params
+   */
+  private createBrand = async (params: Brand): Promise<{
+    data: Brand | null,
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const {data, status, error} = await this.fetcher.post(`/brands`, params);
+    return {data, status, error};
+  }
+
+  /**
+   *
+   * @param id
+   */
+  private deleteBrand = async (id: string): Promise<{
+    data: any,
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const {data, status, error} = await this.fetcher.delete(`/brands/${id}`);
+    return {data, status, error};
+  }
+
 
   /**
    *
