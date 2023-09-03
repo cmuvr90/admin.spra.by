@@ -1,7 +1,5 @@
-'use client';
-
 import {BrandsTemplate} from "@/templates/BrandsTemplate";
 
-export default function Brands() {
+export default function BrandsPage() {
   return <BrandsTemplate/>
 }

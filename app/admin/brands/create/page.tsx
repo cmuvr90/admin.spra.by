@@ -1,6 +1,6 @@
-import {UserTemplate} from "@/templates/UserTemplate";
-import {User} from "@/services/User";
+import {BrandTemplate} from "@/templates/BrandTemplate";
+import {Brand} from "@/services/Brand";
 
-export default async function CrateUser() {
-  return <UserTemplate user={User.DEFAULT}/>
+export default async function CrateBrandPage() {
+  return <BrandTemplate brand={Brand.DEFAULT}/>
 }

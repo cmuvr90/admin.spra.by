@@ -47,7 +47,7 @@ export const BrandsTemplate = () => {
     title={'Brands'}
     primaryAction={{
       content: 'Create',
-      onAction: () => router.push('/admin/brands/create')
+      onAction: () => router.replace('/admin/brands/create')
     }}>
     <Card padding={'0'}>
       <IndexTable
