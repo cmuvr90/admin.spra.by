@@ -11,6 +11,8 @@ import {Brand} from "@/services/Brand";
 import {createBrand, deleteBrand, updateBrand} from "@/serverActions/brand";
 import CardPicker from "@/components/CardPicker";
 import {Obj, PICKER_RESOURCE_TYPE} from "@/services/types";
+import {User} from "@/services/types/User";
+import {Category} from "@/services/types/Category";
 
 export const BrandTemplate = ({brand: brandData}: Props) => {
   const router = useRouter();
@@ -31,7 +33,7 @@ export const BrandTemplate = ({brand: brandData}: Props) => {
   const onChange = (value: Obj) => setBrand((brand: any) => ({...brand, ...value}))
 
   useEffect(() => {
-    const isEqual = saveBar.onChange(defaultBrand, brand);
+    const isEqual = saveBar.onChange(Brand.getData(defaultBrand), Brand.getData(brand));
     if (isEqual) setErrors({});
   }, [brand, defaultBrand])
 
@@ -53,6 +55,36 @@ export const BrandTemplate = ({brand: brandData}: Props) => {
       } catch (e) {
         toast.error((e as Error).message || 'error')
       }
+    }
+  }
+
+  async function onUpdateUser(user: User) {
+    try {
+      if (!user?.id) throw Error('Error');
+
+      const brandData = Brand.getData(defaultBrand);
+      const data = await updateBrand({...brandData, user: user.id});
+      if (!data) throw Error('Error');
+
+      setDefaultBrand(data);
+      setBrand({...brand, user: data.user});
+      toast.info('Updated');
+    } catch (e) {
+      toast.error((e as Error).message || 'error')
+    }
+  }
+
+  async function onUpdateCategories(categories: Category[]) {
+    try {
+      const brandData = Brand.getData(defaultBrand);
+      const data = await updateBrand({...brandData, categories: categories.map(i => i.id)});
+      if (!data) throw Error('Error');
+
+      setDefaultBrand(data);
+      setBrand({...brand, categories: data.categories});
+      toast.info('Updated');
+    } catch (e) {
+      toast.error((e as Error).message || 'error')
     }
   }
 
@@ -110,25 +142,26 @@ export const BrandTemplate = ({brand: brandData}: Props) => {
           </FormLayout>
         </Card>
       </Layout.Section>
-      {
-        !!brand?.id &&
-        <Layout.Section oneThird>
-          <CardPicker
-            type={PICKER_RESOURCE_TYPE.USER}
-            items={brand?.user ? [brand.user] : []}
-            onSelect={async user => onChange({user})}
-            onDelete={async () => onChange({user: null})}
-            selectedItems={brand?.user?.id ? [brand.user.id] : []}
-          />
-          <CardPicker
-            type={PICKER_RESOURCE_TYPE.CATEGORIES}
-            items={brand?.categories ?? []}
-            onSelect={async categories => onChange({categories})}
-            onDelete={async categories => onChange({categories})}
-            selectedItems={(brand?.categories ?? []).map(c => c.id)}
-          />
-        </Layout.Section>
-      }
+      <Layout.Section oneThird>
+        <CardPicker
+          disabled={!brand?.id}
+          type={PICKER_RESOURCE_TYPE.USER}
+          items={brand?.user ? [brand.user] : []}
+          onSelect={onUpdateUser}
+          onDelete={async () => onChange({user: null})}
+          selectedItems={brand?.user?.id ? [brand.user.id] : []}
+        />
+        <CardPicker
+          disabled={!brand?.id}
+          type={PICKER_RESOURCE_TYPE.CATEGORIES}
+          items={brand?.categories ?? []}
+          onSelect={onUpdateCategories}
+          onDelete={async category => {
+            onChange({categories: brand.categories.filter(i => i.id !== category.id)})
+          }}
+          selectedItems={(brand?.categories ?? []).map(c => c.id)}
+        />
+      </Layout.Section>
       {
         !!brand?.id &&
         <Layout.Section>

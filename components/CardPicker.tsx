@@ -12,6 +12,7 @@ const CardPicker = ({
                       items = [],
                       useUrl = true,
                       error = null,
+                      disabled = false,
                       selectedItems = [],
                     }: Props) => {
 
@@ -48,6 +49,7 @@ const CardPicker = ({
     actions={[{
       content: 'Edit',
       onAction: onEdit,
+      disabled
     }]}>
     <LegacyStack>
       {
@@ -106,13 +108,13 @@ function getUrlByType(item: Obj, type: PICKER_RESOURCE_TYPE) {
   switch (type) {
     case PICKER_RESOURCE_TYPE.CATEGORY:
     case PICKER_RESOURCE_TYPE.CATEGORIES:
-      return `/categories/${item.id}`
+      return `/admin/categories/${item.id}`
     case PICKER_RESOURCE_TYPE.OPTION:
     case PICKER_RESOURCE_TYPE.OPTIONS:
-      return `/options/${item.id}`
+      return `/admin/options/${item.id}`
     case PICKER_RESOURCE_TYPE.USER:
     case PICKER_RESOURCE_TYPE.USERS:
-      return `/users/${item.id}`
+      return `/admin/users/${item.id}`
   }
 }
 
@@ -130,5 +132,6 @@ type Props = {
   items: Obj[] | Category[] | User[],
   useUrl?: boolean,
   error?: null,
+  disabled?: boolean,
   selectedItems: string[],
 }

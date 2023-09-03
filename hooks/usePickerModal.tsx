@@ -78,10 +78,14 @@ export function usePickerModal() {
         content: 'Select',
         disabled: true,
         onAction: () => {
+          modal.primary.loading()
+
           setData(value => {
-            modal.primary.loading()
-            console.log('VALUE = ', value);
-            if (typeof onSelect === 'function') onSelect(value).then(() => modal.close())
+            if (typeof onSelect === 'function') {
+              onSelect(value).finally(() => {
+                modal.close()
+              })
+            }
             return value
           })
         },
