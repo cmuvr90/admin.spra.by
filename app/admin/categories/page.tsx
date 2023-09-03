@@ -1,7 +1,5 @@
-'use client';
-
 import {CategoriesTemplate} from "@/templates/CategoriesTemplate";
 
-export default function Categories() {
+export default function BrandsPage() {
   return <CategoriesTemplate/>
 }
