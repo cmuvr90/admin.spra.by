@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {LegacyCard, LegacyStack, Tag, InlineError, Button} from '@shopify/polaris'
+import {LegacyCard, LegacyStack, Tag, InlineError, Button, Text, Spinner} from '@shopify/polaris'
 import {usePickerModal} from "@/hooks";
 import {Obj, PICKER_RESOURCE_TYPE} from "@/services/types";
 import {Category} from "@/services/types/Category";
@@ -18,6 +18,7 @@ const CardPicker = ({
 
   const pickerModal = usePickerModal()
   const [settings, setSettings] = useState<SettingsByType | null>(null)
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setSettings(getSettingsByType(type))
@@ -39,17 +40,30 @@ const CardPicker = ({
 
     return <Tag
       key={item.id}
-      onRemove={typeof onDelete === 'function' ? () => onDelete(item) : undefined}
+      disabled={disabled || loading}
+      onRemove={
+        typeof onDelete === 'function' ? () => {
+          setLoading(true);
+          onDelete(item).finally(() => setLoading(false))
+        } : undefined
+      }
     >{title}</Tag>
   }
 
   return settings && <LegacyCard
-    title={settings.title}
+    title={
+      <LegacyStack alignment={'center'}>
+        <Text as={'span'} variant={'headingMd'}>{settings.title}</Text>
+        {
+          loading && <Spinner size={'small'}/>
+        }
+      </LegacyStack>
+    }
     sectioned
     actions={[{
       content: 'Edit',
       onAction: onEdit,
-      disabled
+      disabled: disabled || loading
     }]}>
     <LegacyStack>
       {

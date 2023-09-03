@@ -28,6 +28,7 @@ export const BrandTemplate = ({brand: brandData}: Props) => {
 
   const [defaultBrand, setDefaultBrand] = useState(brandData);
   const [brand, setBrand] = useState(brandData);
+  const [disabled, setDisabled] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string | boolean }>({});
 
   const onChange = (value: Obj) => setBrand((brand: any) => ({...brand, ...value}))
@@ -48,6 +49,7 @@ export const BrandTemplate = ({brand: brandData}: Props) => {
     setErrors(errors ?? {});
 
     if (!errors) {
+      setDisabled(true);
       try {
         const data = await updateBrand(brandData);
         setDefaultBrand(brand);
@@ -55,15 +57,15 @@ export const BrandTemplate = ({brand: brandData}: Props) => {
       } catch (e) {
         toast.error((e as Error).message || 'error')
       }
+      setDisabled(false);
     }
   }
 
-  async function onUpdateUser(user: User) {
+  async function onUpdateUser(user: User | null) {
+    setDisabled(true);
     try {
-      if (!user?.id) throw Error('Error');
-
       const brandData = Brand.getData(defaultBrand);
-      const data = await updateBrand({...brandData, user: user.id});
+      const data = await updateBrand({...brandData, user: user?.id ?? null});
       if (!data) throw Error('Error');
 
       setDefaultBrand(data);
@@ -72,9 +74,11 @@ export const BrandTemplate = ({brand: brandData}: Props) => {
     } catch (e) {
       toast.error((e as Error).message || 'error')
     }
+    setDisabled(false);
   }
 
   async function onUpdateCategories(categories: Category[]) {
+    setDisabled(true);
     try {
       const brandData = Brand.getData(defaultBrand);
       const data = await updateBrand({...brandData, categories: categories.map(i => i.id)});
@@ -86,6 +90,7 @@ export const BrandTemplate = ({brand: brandData}: Props) => {
     } catch (e) {
       toast.error((e as Error).message || 'error')
     }
+    setDisabled(false);
   }
 
   async function onCreate() {
@@ -94,6 +99,7 @@ export const BrandTemplate = ({brand: brandData}: Props) => {
     setErrors(errors ?? {});
 
     if (!errors) {
+      setDisabled(true);
       try {
         const data = await createBrand(brandData);
         if (data) {
@@ -105,16 +111,19 @@ export const BrandTemplate = ({brand: brandData}: Props) => {
       } catch (e) {
         toast.error((e as Error).message || 'error')
       }
+      setDisabled(false);
     }
   }
 
   async function onDelete(id: string) {
     try {
+      setDisabled(true);
       const data = await deleteBrand(id);
       toast.info('Deleted');
       router.push(`/admin/brands`);
     } catch (e) {
       toast.error((e as Error).message || 'error')
+      setDisabled(false);
     }
   }
 
@@ -130,6 +139,7 @@ export const BrandTemplate = ({brand: brandData}: Props) => {
               multiline
               error={errors?.name}
               onChange={name => onChange({name})}
+              disabled={disabled}
             />
             <TextField
               autoComplete={'off'}
@@ -138,27 +148,26 @@ export const BrandTemplate = ({brand: brandData}: Props) => {
               multiline
               error={errors?.description}
               onChange={description => onChange({description})}
+              disabled={disabled}
             />
           </FormLayout>
         </Card>
       </Layout.Section>
       <Layout.Section oneThird>
         <CardPicker
-          disabled={!brand?.id}
+          disabled={!brand?.id || disabled}
           type={PICKER_RESOURCE_TYPE.USER}
           items={brand?.user ? [brand.user] : []}
           onSelect={onUpdateUser}
-          onDelete={async () => onChange({user: null})}
+          onDelete={async () => onUpdateUser(null)}
           selectedItems={brand?.user?.id ? [brand.user.id] : []}
         />
         <CardPicker
-          disabled={!brand?.id}
+          disabled={!brand?.id || disabled}
           type={PICKER_RESOURCE_TYPE.CATEGORIES}
           items={brand?.categories ?? []}
           onSelect={onUpdateCategories}
-          onDelete={async category => {
-            onChange({categories: brand.categories.filter(i => i.id !== category.id)})
-          }}
+          onDelete={async c => onUpdateCategories(brand.categories.filter(i => i.id !== c.id))}
           selectedItems={(brand?.categories ?? []).map(c => c.id)}
         />
       </Layout.Section>
@@ -169,6 +178,7 @@ export const BrandTemplate = ({brand: brandData}: Props) => {
             secondaryActions={[{
               content: 'Delete',
               destructive: true,
+              disabled: disabled,
               onAction: () => {confirm.open(() => onDelete(brand?.id ?? ''))},
             }]}
           />
