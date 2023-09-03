@@ -1,5 +1,5 @@
 import {CategoriesTemplate} from "@/templates/CategoriesTemplate";
 
-export default function BrandsPage() {
+export default function CategoriesPage() {
   return <CategoriesTemplate/>
 }

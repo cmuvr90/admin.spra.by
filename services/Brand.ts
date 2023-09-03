@@ -18,7 +18,10 @@ export class Brand {
       name: brand.name,
       user: brand.user?.id ?? null,
       description: brand.description,
-      categories: (brand.categories ?? []).map(i => i.id),
+      categories: (brand.categories ?? []).reduce((acc: string[], i) => {
+        if (i.id) acc.push(i.id)
+        return acc;
+      }, []),
     }
   }
 

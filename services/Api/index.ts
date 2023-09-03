@@ -4,14 +4,16 @@ import Config from "@/config";
 import {User} from "@/services/types/User";
 import {Brand, BrandData} from "@/services/types/Brand";
 import {Obj} from "@/services/types";
-import {Category} from "@/services/types/Category";
+import {Category, CategoryData} from "@/services/types/Category";
+import {Option as OptionInterface, Option} from "@/services/types/Option";
 
 export default class Api {
-  private fetcher;
-  public products;
-  public users;
-  public brands;
-  public categories;
+  private readonly fetcher;
+  public readonly products;
+  public readonly users;
+  public readonly brands;
+  public readonly categories;
+  public readonly options;
 
   constructor(headers?: { [key: string]: string } | null) {
     this.fetcher = new Fetcher({baseUrl: Config.API_BASE_URL, headers});
@@ -43,6 +45,14 @@ export default class Api {
       create: this.createCategory,
       update: this.updateCategory,
       delete: this.deleteCategory,
+    };
+
+    this.options = {
+      get: this.getOption,
+      list: this.getOptions,
+      create: this.createOption,
+      update: this.updateOption,
+      delete: this.deleteOption,
     };
   }
 
@@ -209,7 +219,7 @@ export default class Api {
    * @param id
    * @param params
    */
-  private updateCategory = async (id: string, params: Category): Promise<{
+  private updateCategory = async (id: string, params: CategoryData): Promise<{
     data: Category | null,
     status: FetchResponseStatus,
     error: string | null
@@ -222,7 +232,7 @@ export default class Api {
    *
    * @param params
    */
-  private createCategory = async (params: Category): Promise<{
+  private createCategory = async (params: CategoryData): Promise<{
     data: Category | null,
     status: FetchResponseStatus,
     error: string | null
@@ -244,6 +254,71 @@ export default class Api {
     return {data, status, error};
   }
 
+  /**
+   *
+   * @returns
+   */
+  private getOptions = async (params?: Obj): Promise<{
+    data: Option[],
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const {data, status, error} = await this.fetcher.get(`/options`, params);
+    return {data, status, error};
+  };
+
+  /**
+   *
+   * @returns
+   */
+  private getOption = async (id: string): Promise<{
+    data: Option | null,
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const {data, status, error} = await this.fetcher.get(`/options/${id}`);
+    return {data, status, error};
+  };
+
+  /**
+   *
+   * @param id
+   * @param params
+   */
+  private updateOption = async (id: string, params: OptionInterface): Promise<{
+    data: Option | null,
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const {data, status, error} = await this.fetcher.put(`/options/${id}`, params);
+    return {data, status, error};
+  }
+
+  /**
+   *
+   * @param params
+   */
+  private createOption = async (params: OptionInterface): Promise<{
+    data: Option | null,
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const {data, status, error} = await this.fetcher.post(`/options`, params);
+    return {data, status, error};
+  }
+
+  /**
+   *
+   * @param id
+   */
+  private deleteOption = async (id: string): Promise<{
+    data: any,
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const {data, status, error} = await this.fetcher.delete(`/options/${id}`);
+    return {data, status, error};
+  }
 
   /**
    *

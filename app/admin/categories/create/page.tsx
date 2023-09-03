@@ -1,6 +1,6 @@
-import {BrandTemplate} from "@/templates/BrandTemplate";
-import {Brand} from "@/services/Brand";
+import {CategoryTemplate} from "@/templates/CategoryTemplate";
+import {Category} from "@/services/Category";
 
 export default async function CrateBrandPage() {
-  return <BrandTemplate brand={Brand.DEFAULT}/>
+  return <CategoryTemplate category={Category.DEFAULT}/>
 }

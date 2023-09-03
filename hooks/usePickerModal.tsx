@@ -5,6 +5,8 @@ import {Obj, PICKER_RESOURCE_TYPE} from "@/services/types";
 import {getUsers} from "@/serverActions/user";
 import CategoriesPicker from "@/components/CategoriesPicker";
 import {getCategories} from "@/serverActions/category";
+import OptionsPicker from "@/components/OptionsPicker";
+import {getOptions} from "@/serverActions/option";
 
 export function usePickerModal() {
   const modal = useModal()
@@ -59,13 +61,13 @@ export function usePickerModal() {
         break
       case PICKER_RESOURCE_TYPE.OPTION :
       case PICKER_RESOURCE_TYPE.OPTIONS : {
-        // content = <OptionsPicker
-        //   apiMethod={getOptions}
-        //   onSelect={setData}
-        //   multiselect={type === PICKER_RESOURCE_TYPE.OPTIONS}
-        //   selectedItems={selectedItems}
-        // />
-        // title = !!title?.length ? title : 'Options'
+        content = <OptionsPicker
+          apiMethod={getOptions}
+          onSelect={setData}
+          multiselect={type === PICKER_RESOURCE_TYPE.OPTIONS}
+          selectedItems={selectedItems}
+        />
+        title = !!title?.length ? title : 'Options'
       }
         break
     }

@@ -1,17 +1,17 @@
-import {Brand as BrandInterface} from "@/services/types/Brand";
-import {getBrand} from "@/serverActions/brand";
-import {BrandTemplate} from "@/templates/BrandTemplate";
+import {Category as CategoryInterface} from "@/services/types/Category";
+import {getCategory} from "@/serverActions/category";
+import {CategoryTemplate} from "@/templates/CategoryTemplate";
 
-let brand: BrandInterface | null = null;
+let category: CategoryInterface | null = null;
 
-export default async function BrandPage({params: {id}}: Props) {
+export default async function CategoryPage({params: {id}}: Props) {
   try {
-    brand = await getBrand(id);
+    category = await getCategory(id);
   } catch (e) {
     console.log('ERROR = ', e);
   }
 
-  return brand && <BrandTemplate brand={brand}/>
+  return category && <CategoryTemplate category={category}/>
 }
 
 type Props = {

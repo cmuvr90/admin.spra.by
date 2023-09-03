@@ -4,6 +4,7 @@ import {usePickerModal} from "@/hooks";
 import {Obj, PICKER_RESOURCE_TYPE} from "@/services/types";
 import {Category} from "@/services/types/Category";
 import {User} from "@/services/types/User";
+import {Option} from "@/services/types/Option";
 
 const CardPicker = ({
                       type,
@@ -143,7 +144,7 @@ type Props = {
   type: PICKER_RESOURCE_TYPE
   onSelect?: (value: any) => Promise<any>
   onDelete?: (value: any) => Promise<void>,
-  items: Obj[] | Category[] | User[],
+  items: Obj[] | Category[] | User[] | Option[],
   useUrl?: boolean,
   error?: null,
   disabled?: boolean,
