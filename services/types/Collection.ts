@@ -3,6 +3,7 @@ import {Category} from "@/services/types/Category";
 export interface CollectionBase {
   id: string | null,
   name: string,
+  handle: string,
   title: string,
   description: string,
 }

@@ -6,6 +6,7 @@ export class Collection {
 
   static DEFAULT = {
     id: null,
+    handle: '',
     name: '',
     title: '',
     description: '',
@@ -16,6 +17,7 @@ export class Collection {
     return {
       id: collection?.id ?? null,
       name: collection.name,
+      handle: collection.handle,
       title: collection.title,
       description: collection.description,
       categories: (collection.categories ?? []).filter(i => !!i.id).map(i => i.id as string),
