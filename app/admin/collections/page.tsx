@@ -1,6 +1,5 @@
-'use client';
-import {CollectionsTemplate} from "@/templates/CollectionsTemplate";
+import {CategoriesTemplate} from "@/templates/CategoriesTemplate";
 
-export default function Collections() {
-  return <CollectionsTemplate/>
+export default function CategoriesPage() {
+  return <CategoriesTemplate/>
 }
