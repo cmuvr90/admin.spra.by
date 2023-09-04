@@ -1,7 +1,5 @@
-'use client';
-
 import {OptionsTemplate} from "@/templates/OptionsTemplate";
 
-export default function Options() {
+export default function OptionsPage() {
   return <OptionsTemplate/>
 }

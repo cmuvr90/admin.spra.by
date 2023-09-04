@@ -1,5 +1,5 @@
 export interface Option {
-  id: string,
+  id: string | null,
   name: string,
   type: string, //@todo enum
   title: string,
