@@ -1,5 +1,5 @@
-import {CategoriesTemplate} from "@/templates/CategoriesTemplate";
+import {CollectionsTemplate} from "@/templates/CollectionsTemplate";
 
 export default function CategoriesPage() {
-  return <CategoriesTemplate/>
+  return <CollectionsTemplate/>
 }

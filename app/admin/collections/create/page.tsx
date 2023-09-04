@@ -1,6 +1,6 @@
-import {CategoryTemplate} from "@/templates/CategoryTemplate";
-import {Category} from "@/services/Category";
+import {CollectionTemplate} from "@/templates/CollectionTemplate";
+import {Collection} from "@/services/Collection";
 
-export default async function CrateBrandPage() {
-  return <CategoryTemplate category={Category.DEFAULT}/>
+export default async function CrateCollectionPage() {
+  return <CollectionTemplate collection={Collection.DEFAULT}/>
 }

@@ -1,17 +1,17 @@
-import {Category as CategoryInterface} from "@/services/types/Category";
-import {getCategory} from "@/serverActions/category";
-import {CategoryTemplate} from "@/templates/CategoryTemplate";
+import {Collection as CollectionInterface} from "@/services/types/Collection";
+import {CollectionTemplate} from "@/templates/CollectionTemplate";
+import {getCollection} from "@/serverActions/collection";
 
-let category: CategoryInterface | null = null;
+let collection: CollectionInterface | null = null;
 
-export default async function CategoryPage({params: {id}}: Props) {
+export default async function CollectionPage({params: {id}}: Props) {
   try {
-    category = await getCategory(id);
+    collection = await getCollection(id);
   } catch (e) {
     console.log('ERROR = ', e);
   }
 
-  return category && <CategoryTemplate category={category}/>
+  return collection && <CollectionTemplate collection={collection}/>
 }
 
 type Props = {
