@@ -5,8 +5,10 @@ import {
   Card,
   FormLayout,
   Layout,
+  LegacyStack,
   Page,
   PageActions,
+  Text,
   TextField
 } from '@shopify/polaris'
 import '@shopify/polaris/build/esm/styles.css'
@@ -17,6 +19,7 @@ import {Obj} from "@/services/types";
 import {Option as OptionInterface} from "@/services/types/Option";
 import {Option} from "@/services/Option";
 import {createOption, deleteOption, updateOption} from "@/serverActions/option";
+import {ValueStack} from "@/components/ValueStack";
 
 export const OptionTemplate = ({option: optionData}: Props) => {
   const router = useRouter();
@@ -134,6 +137,14 @@ export const OptionTemplate = ({option: optionData}: Props) => {
               disabled={disabled}
             />
           </FormLayout>
+        </Card>
+      </Layout.Section>
+      <Layout.Section>
+        <Card>
+          <LegacyStack vertical>
+            <Text as={'h3'}>Values</Text>
+            <ValueStack items={option.values} onChange={values => onChange({values})}/>
+          </LegacyStack>
         </Card>
       </Layout.Section>
       {
