@@ -11,31 +11,53 @@ export const authOptions: NextAuthOptions = {
       },
 
       async authorize(credentials, req) {
-        console.log(credentials);
+        const {email, password, brandId, hash} = credentials as any;
 
-        const {email, password} = credentials as any;
+        if (email && password) {
+          try {
+            const query = await fetch(`${process.env.API_BASE_URL}/users/login`, {
+              method: 'POST',
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({email, password})
+            });
 
-        try {
-          const query = await fetch(`${process.env.API_BASE_URL}/users/login`, {
-            method: 'POST',
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({email, password})
-          });
+            const response = await query.json();
 
-          const response = await query.json();
+            if (query.ok) {
+              console.log('response.data = ', response.data);
+              if (response?.data?.user && response?.data?.accessToken) return {
+                ...response.data.user,
+                accessToken: response.data.accessToken,
+              }
+            }
+          } catch (e) {
+            console.log(e);
+          }
+        } else if (brandId && hash) {
+          try {
+            const query = await fetch(`${process.env.API_BASE_URL}/brands/login`, {
+              method: 'POST',
+              headers: {
+                "Content-Type": "application/json",
+                "userid": hash
+              },
+              body: JSON.stringify({id: brandId})
+            });
 
-          if (query.ok) {
-            console.log('response.data = ', response.data);
+            const response = await query.json();
+
             if (response?.data?.user && response?.data?.accessToken) return {
               ...response.data.user,
               accessToken: response.data.accessToken,
             }
+
+          } catch (e) {
+            console.log(e);
           }
-        } catch (e) {
-          console.log(e);
         }
+
         return null
       }
     })
