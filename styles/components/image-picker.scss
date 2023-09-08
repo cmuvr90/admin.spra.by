@@ -1,0 +1,27 @@
+.image-picker {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+
+  .image-item {
+    width: calc(20% - 12px);
+    aspect-ratio: 1;
+  }
+}
+
+.image-picker.image-picker--selectable {
+  .image-item {
+    &__selectable {
+      opacity: 1;
+      top: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    &__over {
+      & > * {
+        opacity: 0;
+      }
+    }
+  }
+}

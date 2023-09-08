@@ -17,11 +17,21 @@ export class Product {
    *
    * @param product
    */
+  static getMainImage = (product: ProductInterface): string | null => {
+    const firstImage = !!product.images.length ? product.images[0] : null
+    return !!firstImage && typeof firstImage !== 'string' ? firstImage.src : null;
+  }
+
+  /**
+   *
+   * @param product
+   */
   static getData(product: ProductInterface): ProductData {
     return {
       id: product?.id ?? null,
       title: product.title,
-      description: product.description
+      description: product.description,
+      category: null,
     }
   }
 

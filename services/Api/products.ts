@@ -75,4 +75,18 @@ export default class ProductApi {
     const {data, status, error} = await this.fetcher.delete(`/products/${id}`);
     return {data, status, error};
   }
+
+  /**
+   *
+   * @param id
+   * @param imageId
+   */
+  public setMainImage = async (id: string, imageId: string): Promise<{
+    data: Product | null,
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const {data, status, error} = await this.fetcher.put(`/products/${id}/images/${imageId}/main`);
+    return {data, status, error};
+  }
 }

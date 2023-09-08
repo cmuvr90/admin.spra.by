@@ -3,15 +3,17 @@
 import React, {useEffect, useState} from 'react'
 import {Card, FormLayout, Layout, LegacyStack, Page, PageActions, TextField} from '@shopify/polaris'
 import '@shopify/polaris/build/esm/styles.css'
-import {useMessage, useSaveBar} from "@/hooks";
+import {useMessage, useSaveBar, useViewImageModal} from "@/hooks";
 import {Product as ProductInterface} from "@/services/types/Product";
 import {useRouter} from "next/navigation";
 import {useConfirm} from "@/hooks/useConfirm";
 import {Product} from "@/services/Product";
-import {createProduct, deleteProduct, updateProduct} from "@/serverActions/product";
+import {createProduct, deleteProduct, setProductMainImage, updateProduct} from "@/serverActions/product";
 import {Obj, PICKER_RESOURCE_TYPE} from "@/services/types";
 import CardPicker from "@/components/CardPicker";
 import {Category} from "@/services/types/Category";
+import ImageItem from "@/components/ImageItem";
+import {Image} from "@/services/types/Image";
 
 export const ProductTemplate = ({product: productData}: Props) => {
   const router = useRouter();
@@ -24,11 +26,12 @@ export const ProductTemplate = ({product: productData}: Props) => {
     }
   );
   const toast = useMessage();
+  const viewImageModal = useViewImageModal();
 
   const [defaultProduct, setDefaultProduct] = useState(productData);
   const [product, setProduct] = useState(productData);
   const [disabled, setDisabled] = useState(false);
-  const [errors, setErrors] = useState<{ [key: string]: string | boolean }>({});
+  const [errors, setErrors] = useState<Obj>({});
 
   const onChange = (value: Obj) => setProduct((product: any) => ({...product, ...value}))
 
@@ -99,15 +102,40 @@ export const ProductTemplate = ({product: productData}: Props) => {
   }
 
   async function onDelete(id: string) {
+    setDisabled(true);
     try {
-      setDisabled(true);
       const data = await deleteProduct(id);
       toast.info('Deleted');
       router.push(`/admin/products`);
     } catch (e) {
       toast.error((e as Error).message || 'error')
-      setDisabled(false);
     }
+    setDisabled(false);
+  }
+
+  async function onSetProductMainImage(src: string) {
+    setDisabled(true);
+    try {
+      const image = (product.images as Image[]).find(i => i.src === src);
+      if (!image) throw Error('Error change image');
+
+      const data = await setProductMainImage(product.id as string, image?.id as string);
+      if (!data) throw Error('Error change image');
+
+      setDefaultProduct(data);
+      setProduct({...product, images: data.images});
+      toast.info('Changed');
+    } catch (e) {
+      toast.error((e as Error).message || 'error')
+    }
+    setDisabled(false);
+  }
+
+  const onViewImage = (src: string | null) => {
+    viewImageModal.open(src, product.images as Image[], [{
+      content: 'Choose as the main',
+      onAction: async v => v ? onSetProductMainImage(v) : null,
+    }])
   }
 
   return <Page title={defaultProduct.title}>
@@ -115,7 +143,11 @@ export const ProductTemplate = ({product: productData}: Props) => {
       <Layout.Section secondary>
         <LegacyStack vertical>
           <Card>
-            IMAGE
+            <ImageItem
+              src={Product.getMainImage(product)}
+              selectable={false}
+              onView={onViewImage}
+            />
           </Card>
           <CardPicker
             disabled={!product?.id || disabled}

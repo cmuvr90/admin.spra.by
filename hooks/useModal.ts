@@ -39,7 +39,7 @@ export function useModal() {
 
   const secondaryDisable = (i: number = 1, value: boolean = true) => secondaryChange(i, {disabled: value})
 
-  const secondaryUnloading = (i: number) => secondaryLoading(i, false)
+  const secondaryUnloading = (i?: number) => secondaryLoading(i, false)
 
   return {
     change,

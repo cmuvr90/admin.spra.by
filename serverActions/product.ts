@@ -48,3 +48,11 @@ export async function deleteProduct(id: string): Promise<any> {
   revalidatePath(`/`)
   return data;
 }
+
+export async function setProductMainImage(productId: string, imageId: string): Promise<ProductInterface | null> {
+  const api = await getAuthApi();
+  const {data, status, error} = await api.products.setMainImage(productId, imageId);
+  if (status === FetchResponseStatus.ERROR) throw Error(error || 'Error');
+  revalidatePath(`/`)
+  return data;
+}
