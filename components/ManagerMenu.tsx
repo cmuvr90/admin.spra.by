@@ -12,12 +12,12 @@ export const ManagerMenu = () => {
         {
           label: 'Dashboard',
           icon: HomeMajor,
-          url: 'admin/dashboard',
+          url: '/admin/dashboard',
         },
         {
           label: 'Products',
           icon: ProductsMajor,
-          url: 'admin/products',
+          url: '/admin/products',
         },
       ]}
     />
