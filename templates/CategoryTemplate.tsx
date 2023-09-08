@@ -66,7 +66,7 @@ export const CategoryTemplate = ({category: categoryData}: Props) => {
     setDisabled(true);
     try {
       const categoryData = Category.getData(defaultCategory);
-      const data = await updateCategory({...categoryData, options: options.map(i => i.id)});
+      const data = await updateCategory({...categoryData, options: options.map(i => i.id as string)});
       if (!data) throw Error('Error');
 
       setDefaultCategory(data);
@@ -156,7 +156,7 @@ export const CategoryTemplate = ({category: categoryData}: Props) => {
             items={category.options}
             onSelect={onUpdateOptions}
             onDelete={async o => onUpdateOptions(category.options.filter(i => i.id !== o.id))}
-            selectedItems={category.options.map(i => i.id)}
+            selectedItems={category.options.map(i => i.id as string)}
           />
         }
       </Layout.Section>

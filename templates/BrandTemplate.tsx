@@ -81,7 +81,7 @@ export const BrandTemplate = ({brand: brandData}: Props) => {
     setDisabled(true);
     try {
       const brandData = Brand.getData(defaultBrand);
-      const data = await updateBrand({...brandData, categories: categories.map(i => i.id)});
+      const data = await updateBrand({...brandData, categories: categories.map(i => i.id as string)});
       if (!data) throw Error('Error');
 
       setDefaultBrand(data);
@@ -168,7 +168,7 @@ export const BrandTemplate = ({brand: brandData}: Props) => {
           items={brand?.categories ?? []}
           onSelect={onUpdateCategories}
           onDelete={async c => onUpdateCategories(brand.categories.filter(i => i.id !== c.id))}
-          selectedItems={(brand?.categories ?? []).map(c => c.id)}
+          selectedItems={(brand?.categories ?? []).map(c => c.id as string)}
         />
       </Layout.Section>
       {

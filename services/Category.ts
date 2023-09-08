@@ -18,7 +18,7 @@ export class Category {
       name: category.name,
       title: category.title,
       description: category.description,
-      options: category.options.map(i => i.id),
+      options: (category.options ?? []).filter(i => !!i.id).map(i => i.id as string),
     }
   }
 
