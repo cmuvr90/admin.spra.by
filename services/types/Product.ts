@@ -15,4 +15,5 @@ export interface ProductData {
   id: string | null,
   title: string,
   description: string,
+  category: null | string,
 }

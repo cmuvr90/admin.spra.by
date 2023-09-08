@@ -109,7 +109,7 @@ function getFieldByType(type: PICKER_RESOURCE_TYPE) {
   switch (type) {
     case PICKER_RESOURCE_TYPE.CATEGORY:
     case PICKER_RESOURCE_TYPE.CATEGORIES:
-      return 'title'
+      return 'name'
     case PICKER_RESOURCE_TYPE.OPTION:
     case PICKER_RESOURCE_TYPE.OPTIONS:
       return 'title'

@@ -1,7 +1,7 @@
 'use client';
 
 import React, {useEffect, useState} from 'react'
-import {Card, FormLayout, Layout, Page, PageActions, TextField} from '@shopify/polaris'
+import {Card, FormLayout, Layout, LegacyStack, Page, PageActions, TextField} from '@shopify/polaris'
 import '@shopify/polaris/build/esm/styles.css'
 import {useMessage, useSaveBar} from "@/hooks";
 import {Product as ProductInterface} from "@/services/types/Product";
@@ -9,7 +9,9 @@ import {useRouter} from "next/navigation";
 import {useConfirm} from "@/hooks/useConfirm";
 import {Product} from "@/services/Product";
 import {createProduct, deleteProduct, updateProduct} from "@/serverActions/product";
-import {Obj} from "@/services/types";
+import {Obj, PICKER_RESOURCE_TYPE} from "@/services/types";
+import CardPicker from "@/components/CardPicker";
+import {Category} from "@/services/types/Category";
 
 export const ProductTemplate = ({product: productData}: Props) => {
   const router = useRouter();
@@ -58,6 +60,22 @@ export const ProductTemplate = ({product: productData}: Props) => {
     }
   }
 
+  async function onUpdateCategory(category: Category | null) {
+    setDisabled(true);
+    try {
+      const productData = Product.getData(defaultProduct);
+      const data = await updateProduct({...productData, category: category?.id ?? null});
+      if (!data) throw Error('Error');
+
+      setDefaultProduct(data);
+      setProduct({...product, category: data.category});
+      toast.info('Updated');
+    } catch (e) {
+      toast.error((e as Error).message || 'error')
+    }
+    setDisabled(false);
+  }
+
   async function onCreate() {
     const productData = Product.getData(product);
     const {errors} = Product.validate(productData);
@@ -94,6 +112,21 @@ export const ProductTemplate = ({product: productData}: Props) => {
 
   return <Page title={defaultProduct.title}>
     <Layout>
+      <Layout.Section secondary>
+        <LegacyStack vertical>
+          <Card>
+            IMAGE
+          </Card>
+          <CardPicker
+            disabled={!product?.id || disabled}
+            type={PICKER_RESOURCE_TYPE.CATEGORY}
+            items={product?.category?.id ? [product.category as Category] : []}
+            onSelect={onUpdateCategory}
+            onDelete={async () => onUpdateCategory(null)}
+            selectedItems={product?.category?.id ? [product.category.id] : []}
+          />
+        </LegacyStack>
+      </Layout.Section>
       <Layout.Section>
         <Card>
           <FormLayout>
@@ -102,8 +135,8 @@ export const ProductTemplate = ({product: productData}: Props) => {
               label={'Name'}
               value={product.title}
               multiline
-              error={errors?.name}
-              onChange={name => onChange({name})}
+              error={errors?.title}
+              onChange={title => onChange({title})}
               disabled={disabled}
             />
             <TextField
