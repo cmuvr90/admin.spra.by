@@ -23,6 +23,7 @@ import ImageItem from "@/components/ImageItem";
 import {Image as ImageInterface} from "@/services/types/Image";
 import {Image} from "@/services/Image";
 import ImagesPanel from "../components/ImagesPanel";
+import VariantsPanel from "@/components/VariantsPanel";
 
 export const ProductTemplate = ({product: productData}: Props) => {
   const router = useRouter();
@@ -240,6 +241,7 @@ export const ProductTemplate = ({product: productData}: Props) => {
             onDeleteImages={onDeleteImages}
             onView={onViewImage}
           />
+          <VariantsPanel product={product}/>
         </LegacyStack>
       </Layout.Section>
       {
