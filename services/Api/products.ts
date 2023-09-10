@@ -89,4 +89,32 @@ export default class ProductApi {
     const {data, status, error} = await this.fetcher.put(`/products/${id}/images/${imageId}/main`);
     return {data, status, error};
   }
+
+  /**
+   *
+   * @param id
+   * @param params
+   */
+  public createImages = async (id: string, params: FormData): Promise<{
+    data: Product | null,
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const {data, status, error} = await this.fetcher.post(`/products/${id}/images`, params);
+    return {data, status, error};
+  }
+
+  /**
+   *
+   * @param id
+   * @param params
+   */
+  public deleteImages = async (id: string, params: { ids: string[] }): Promise<{
+    data: Product | null,
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const {data, status, error} = await this.fetcher.delete(`/products/${id}/images`, params);
+    return {data, status, error};
+  }
 }

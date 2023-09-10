@@ -56,3 +56,19 @@ export async function setProductMainImage(productId: string, imageId: string): P
   revalidatePath(`/`)
   return data;
 }
+
+export async function createImages(productId: string, params: FormData): Promise<ProductInterface | null> {
+  const api = await getAuthApi();
+  const {data, status, error} = await api.products.createImages(productId, params);
+  if (status === FetchResponseStatus.ERROR) throw Error(error || 'Error');
+  revalidatePath(`/`)
+  return data;
+}
+
+export async function deleteImages(productId: string, params: { ids: string[] }): Promise<ProductInterface | null> {
+  const api = await getAuthApi();
+  const {data, status, error} = await api.products.deleteImages(productId, params);
+  if (status === FetchResponseStatus.ERROR) throw Error(error || 'Error');
+  revalidatePath(`/`)
+  return data;
+}

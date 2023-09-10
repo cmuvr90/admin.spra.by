@@ -2,5 +2,5 @@ export interface Image {
   id: string | null,
   src: string,
   description: string
-  file?: any
+  file?: File
 }

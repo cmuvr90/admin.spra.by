@@ -8,12 +8,21 @@ import {Product as ProductInterface} from "@/services/types/Product";
 import {useRouter} from "next/navigation";
 import {useConfirm} from "@/hooks/useConfirm";
 import {Product} from "@/services/Product";
-import {createProduct, deleteProduct, setProductMainImage, updateProduct} from "@/serverActions/product";
+import {
+  createImages,
+  createProduct,
+  deleteImages,
+  deleteProduct,
+  setProductMainImage,
+  updateProduct
+} from "@/serverActions/product";
 import {Obj, PICKER_RESOURCE_TYPE} from "@/services/types";
 import CardPicker from "@/components/CardPicker";
 import {Category} from "@/services/types/Category";
 import ImageItem from "@/components/ImageItem";
-import {Image} from "@/services/types/Image";
+import {Image as ImageInterface} from "@/services/types/Image";
+import {Image} from "@/services/Image";
+import ImagesPanel from "../components/ImagesPanel";
 
 export const ProductTemplate = ({product: productData}: Props) => {
   const router = useRouter();
@@ -33,7 +42,13 @@ export const ProductTemplate = ({product: productData}: Props) => {
   const [disabled, setDisabled] = useState(false);
   const [errors, setErrors] = useState<Obj>({});
 
-  const onChange = (value: Obj) => setProduct((product: any) => ({...product, ...value}))
+  const onChange = (value: Obj) => setProduct((product: ProductInterface) => ({...product, ...value}));
+
+  const onChangeProductImages = (images: ImageInterface[]) => setProduct((product: ProductInterface) => ({
+    ...product,
+    images: [...(product.images as ImageInterface[]), ...(images as ImageInterface[])],
+  }))
+
 
   useEffect(() => {
     const isEqual = saveBar.onChange(Product.getData(defaultProduct), Product.getData(product));
@@ -55,6 +70,7 @@ export const ProductTemplate = ({product: productData}: Props) => {
       try {
         const data = await updateProduct(productData);
         setDefaultProduct(product);
+        setProduct(product);
         toast.info('Saved');
       } catch (e) {
         toast.error((e as Error).message || 'error')
@@ -116,7 +132,7 @@ export const ProductTemplate = ({product: productData}: Props) => {
   async function onSetProductMainImage(src: string) {
     setDisabled(true);
     try {
-      const image = (product.images as Image[]).find(i => i.src === src);
+      const image = (product.images as ImageInterface[]).find(i => i.src === src);
       if (!image) throw Error('Error change image');
 
       const data = await setProductMainImage(product.id as string, image?.id as string);
@@ -131,8 +147,42 @@ export const ProductTemplate = ({product: productData}: Props) => {
     setDisabled(false);
   }
 
+  async function onCreateImages(images: ImageInterface[]) {
+    setDisabled(true);
+    try {
+      const formData = Image.getFormData(images.filter(i => !!i.file).map(i => i.file as File));
+      onChangeProductImages(images);
+
+      const data = await createImages(product.id as string, formData);
+      if (!data) throw Error('Error uploading images');
+
+      setDefaultProduct(data);
+      setProduct({...product, images: data.images});
+      toast.info('Uploaded');
+    } catch (e) {
+      toast.error((e as Error).message || 'error')
+    }
+    setDisabled(false);
+  }
+
+  async function onDeleteImages(images: ImageInterface[]) {
+    setDisabled(true);
+    try {
+      const ids = images.filter(i => !!i.id).map(i => i.id as string);
+      const data = await deleteImages(product.id as string, {ids});
+      if (!data) throw Error('Error deleting images');
+
+      setDefaultProduct(data);
+      setProduct({...product, images: data.images});
+      toast.info('Deleted');
+    } catch (e) {
+      toast.error((e as Error).message || 'error')
+    }
+    setDisabled(false);
+  }
+
   const onViewImage = (src: string | null) => {
-    viewImageModal.open(src, product.images as Image[], [{
+    viewImageModal.open(src, product.images as ImageInterface[], [{
       content: 'Choose as the main',
       onAction: async v => v ? onSetProductMainImage(v) : null,
     }])
@@ -160,28 +210,37 @@ export const ProductTemplate = ({product: productData}: Props) => {
         </LegacyStack>
       </Layout.Section>
       <Layout.Section>
-        <Card>
-          <FormLayout>
-            <TextField
-              autoComplete={'off'}
-              label={'Name'}
-              value={product.title}
-              multiline
-              error={errors?.title}
-              onChange={title => onChange({title})}
-              disabled={disabled}
-            />
-            <TextField
-              autoComplete={'off'}
-              label={'Description'}
-              value={product.description}
-              multiline
-              error={errors?.description}
-              onChange={description => onChange({description})}
-              disabled={disabled}
-            />
-          </FormLayout>
-        </Card>
+        <LegacyStack vertical>
+          <Card>
+            <FormLayout>
+              <TextField
+                autoComplete={'off'}
+                label={'Name'}
+                value={product.title}
+                multiline
+                error={errors?.title}
+                onChange={title => onChange({title})}
+                disabled={disabled}
+              />
+              <TextField
+                autoComplete={'off'}
+                label={'Description'}
+                value={product.description}
+                multiline
+                error={errors?.description}
+                onChange={description => onChange({description})}
+                disabled={disabled}
+              />
+            </FormLayout>
+          </Card>
+          <ImagesPanel
+            images={product.images as ImageInterface[]}
+            disabled={!product?.id || disabled}
+            onUploadImages={onCreateImages}
+            onDeleteImages={onDeleteImages}
+            onView={onViewImage}
+          />
+        </LegacyStack>
       </Layout.Section>
       {
         !!product?.id &&

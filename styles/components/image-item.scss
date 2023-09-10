@@ -19,6 +19,11 @@ $secondary: #ededed;
     }
   }
 
+  &--disabled {
+    pointer-events: none;
+    opacity: .6;
+  }
+
   &__wrapper {
     position: relative;
     background: $secondary;

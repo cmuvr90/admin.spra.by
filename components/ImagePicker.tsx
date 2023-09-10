@@ -6,9 +6,10 @@ import {Image} from "@/services/types/Image";
 const ImagePicker = ({
                        images = [],
                        selectedImages = [],
+                       multiselect = true,
+                       disabled = false,
                        onSelected,
                        onView,
-                       multiselect = true
                      }: Props) => {
 
   const viewImageModal = useViewImageModal()
@@ -45,6 +46,7 @@ const ImagePicker = ({
           onView={src => typeof onView === 'function' ? onView(src, images) : viewImageModal.open(src, images)}
           uploading={!!image?.file}
           selectable={true}
+          disabled={disabled}
         />
       })
     }
@@ -55,8 +57,9 @@ export default ImagePicker
 
 type Props = {
   images: Image[],
+  multiselect?: boolean,
+  disabled?: boolean
   selectedImages: Image[],
   onSelected?: (callback: (image: Image[]) => Image[]) => void,
-  onView: (src: string | null, images: Image[]) => void,
-  multiselect: boolean,
+  onView?: (src: string | null, images: Image[]) => void,
 }

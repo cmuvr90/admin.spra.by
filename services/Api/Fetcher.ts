@@ -67,10 +67,9 @@ export default class Fetcher {
   private query = async (url: string, data: any, method: FetcherMethods,): Promise<FetchResponseType> => {
     try {
 
-      const headers: { [key: string]: string } = {
-        "Content-Type": "application/json",
-        ...this.headers
-      };
+      const headers: { [key: string]: string } = {...this.headers};
+
+      if (!(data instanceof FormData)) headers['Content-Type'] = 'application/json';
 
       const queryData: { [key: string]: any } = {
         method,
@@ -81,7 +80,12 @@ export default class Fetcher {
         },
       }
 
-      if (data) queryData.body = JSON.stringify(data)
+      if (data instanceof FormData) {
+        queryData.body = data
+      } else if (data) {
+        queryData.body = JSON.stringify(data)
+      }
+
       const response = await fetch(`${this.baseUrl}${url}`, queryData);
       const responseData = await response.json();
 

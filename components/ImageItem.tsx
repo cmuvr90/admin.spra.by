@@ -9,6 +9,7 @@ const ImageItem = ({
                      selected = false,
                      onSelect,
                      onView,
+                     disabled = false,
                      flexible = false,
                      selectable = false,
                      uploading = false,
@@ -20,8 +21,9 @@ const ImageItem = ({
     if (selected) classes.push(`image-item--selected`)
     if (flexible) classes.push(`image-item--flexible`)
     if (selectable) classes.push(`image-item--selectable`)
+    if (disabled) classes.push(`image-item--disabled`)
     return classes.join(' ')
-  }, [size, selected])
+  }, [size, selected, disabled, flexible, selectable])
 
   return <div className={`image-item ${baseClasses}`}>
     <div className={'image-item__wrapper'}>
@@ -64,6 +66,7 @@ type Props = {
   onSelect?: (src: string | null) => void
   onView?: (src: string | null) => void
   flexible?: boolean,
+  disabled?: boolean
   selectable?: boolean,
   uploading?: boolean,
 }
