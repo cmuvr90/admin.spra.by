@@ -148,4 +148,18 @@ export default class ProductApi {
     const {data, status, error} = await this.fetcher.put(`/products/${productId}/variants/${variantId}`, params);
     return {data, status, error};
   }
+
+  /**
+   *
+   * @param productId
+   * @param variantId
+   */
+  public deleteVariant = async (productId: string, variantId: string): Promise<{
+    data: any | null,
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const {data, status, error} = await this.fetcher.delete(`/products/${productId}/variants/${variantId}`);
+    return {data, status, error};
+  }
 }

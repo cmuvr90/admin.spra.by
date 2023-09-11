@@ -87,7 +87,7 @@ export const ProductTemplate = ({product: productData}: Props) => {
       const data = await updateProduct({...productData, category: category?.id ?? null});
       if (!data) throw Error('Error');
       setDefaultProduct(data);
-      setProduct({...product, category: data.category, options: data.options });
+      setProduct({...product, category: data.category, options: data.options});
       toast.info('Updated');
     } catch (e) {
       toast.error((e as Error).message || 'error')
@@ -173,7 +173,7 @@ export const ProductTemplate = ({product: productData}: Props) => {
       if (!data) throw Error('Error deleting images');
 
       setDefaultProduct(data);
-      setProduct({...product, images: data.images});
+      setProduct({...product, images: data.images, variants: data.variants});
       toast.info('Deleted');
     } catch (e) {
       toast.error((e as Error).message || 'error')
@@ -241,10 +241,11 @@ export const ProductTemplate = ({product: productData}: Props) => {
             onView={onViewImage}
           />
           <VariantsPanel
+            disabled={!product?.id || disabled}
             product={product}
             onUpdate={product => {
-              setProduct(product);
-              setDefaultProduct(product);
+              setProduct(v => ({...v, variants: product.variants}));
+              setDefaultProduct(v => ({...v, variants: product.variants}));
             }}
           />
         </LegacyStack>

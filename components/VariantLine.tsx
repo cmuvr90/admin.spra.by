@@ -5,7 +5,7 @@ import ImageItem from "@/components/ImageItem";
 import {Variant} from "@/services/Variant";
 import {DeleteMajor, EditMajor} from "@shopify/polaris-icons";
 
-const VariantLine = ({variant, onDelete, onEdit, onSelectImage, onViewImage}: Props) => {
+const VariantLine = ({variant, onDelete, onEdit, onSelectImage, onViewImage, disabled = false}: Props) => {
 
   const [deleting, setDeleting] = useState(false);
 
@@ -14,7 +14,7 @@ const VariantLine = ({variant, onDelete, onEdit, onSelectImage, onViewImage}: Pr
   return <LegacyStack alignment={'center'}>
     <LegacyStack.Item>
       <div style={{width: '50px', height: '50px'}}
-           onClick={(!image && typeof onSelectImage === "function") ? () => onSelectImage(variant) : undefined}>
+           onClick={(!image && !disabled && typeof onSelectImage === "function") ? () => onSelectImage(variant) : undefined}>
         <ImageItem
           src={image}
           selectable={false}
@@ -33,12 +33,25 @@ const VariantLine = ({variant, onDelete, onEdit, onSelectImage, onViewImage}: Pr
         </LegacyStack>
         <LegacyStack>
           {
-            typeof onDelete === 'function' &&
-            <Button icon={DeleteMajor} plain monochrome onClick={() => onDelete(variant)} loading={deleting}/>
+            typeof onEdit === 'function' &&
+            <Button
+              icon={EditMajor}
+              plain
+              monochrome
+              onClick={() => onEdit(variant)}
+              disabled={deleting || disabled}
+            />
           }
           {
-            typeof onEdit === 'function' &&
-            <Button icon={EditMajor} plain monochrome onClick={() => onEdit(variant)} disabled={deleting}/>
+            typeof onDelete === 'function' &&
+            <Button
+              icon={DeleteMajor}
+              plain
+              monochrome
+              onClick={() => onDelete(variant)}
+              disabled={disabled}
+              loading={deleting}
+            />
           }
         </LegacyStack>
       </LegacyStack>
@@ -54,4 +67,5 @@ type Props = {
   onDelete?: (variant: VariantInterface) => Promise<void>,
   onSelectImage?: (variant: VariantInterface) => Promise<void>,
   onViewImage?: (src: string | null) => void
+  disabled?: boolean
 }

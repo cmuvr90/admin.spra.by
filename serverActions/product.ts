@@ -90,3 +90,11 @@ export async function updateVariant(productId: string, variantId: string, params
   revalidatePath(`/`)
   return data;
 }
+
+export async function deleteVariant(productId: string, variantId: string): Promise<ProductInterface | null> {
+  const api = await getAuthApi();
+  const {data, status, error} = await api.products.deleteVariant(productId, variantId);
+  if (status === FetchResponseStatus.ERROR) throw Error(error || 'Error');
+  revalidatePath(`/`)
+  return data;
+}

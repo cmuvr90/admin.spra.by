@@ -26,8 +26,8 @@ export function useCreateVariantModal() {
         content: 'Create',
         disabled: true,
         onAction: () => {
+          modal.primary.loading()
           setParams(params => {
-            modal.primary.loading()
             onCreate({values: params.options}).finally(() => { modal.close() })
             return params
           })
