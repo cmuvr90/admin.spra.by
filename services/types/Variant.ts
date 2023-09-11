@@ -10,12 +10,13 @@ export interface VariantBase {
 
 export interface Variant extends VariantBase {
   product: string | Product | null,
-  image: string | Image | null,
+  image?: string | Image | null,
 }
 
-export interface VariantData extends VariantBase{
-  id: string | null,
-  title: string,
-  product: string,
-  values: VariantValue[],
+export interface VariantData {
+  id?: string | null,
+  title?: string,
+  product?: string,
+  image?: string | Image | null,
+  values?: VariantValue[],
 }

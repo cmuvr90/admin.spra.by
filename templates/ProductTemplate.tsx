@@ -86,9 +86,8 @@ export const ProductTemplate = ({product: productData}: Props) => {
       const productData = Product.getData(defaultProduct);
       const data = await updateProduct({...productData, category: category?.id ?? null});
       if (!data) throw Error('Error');
-
       setDefaultProduct(data);
-      setProduct({...product, category: data.category});
+      setProduct({...product, category: data.category, options: data.options });
       toast.info('Updated');
     } catch (e) {
       toast.error((e as Error).message || 'error')
@@ -241,7 +240,13 @@ export const ProductTemplate = ({product: productData}: Props) => {
             onDeleteImages={onDeleteImages}
             onView={onViewImage}
           />
-          <VariantsPanel product={product}/>
+          <VariantsPanel
+            product={product}
+            onUpdate={product => {
+              setProduct(product);
+              setDefaultProduct(product);
+            }}
+          />
         </LegacyStack>
       </Layout.Section>
       {

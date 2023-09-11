@@ -6,6 +6,7 @@ import {useTopBar} from "@/hooks/useTopbar";
 import {useModal} from "@/hooks/useModal";
 import {usePickerModal} from "@/hooks/usePickerModal";
 import {useViewImageModal} from "@/hooks/useViewImageModal";
+import {useCreateVariantModal} from "@/hooks/useCreateVariantModal";
 
 export {
   useMessage,
@@ -15,5 +16,6 @@ export {
   useTopBar,
   useModal,
   usePickerModal,
-  useViewImageModal
+  useViewImageModal,
+  useCreateVariantModal
 }

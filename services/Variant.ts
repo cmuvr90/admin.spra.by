@@ -15,7 +15,7 @@ export class Variant {
   }
 
   static getImage = (variant: VariantInterface): string | null => {
-    return !!variant && typeof variant.image !== 'string' ? (variant.image as Image).src : null;
+    return (!!variant && !!variant?.image && typeof variant?.image !== 'string') ? (variant.image as Image).src : null;
   }
 
   static getData(variant: VariantInterface): VariantData {
@@ -23,7 +23,8 @@ export class Variant {
       id: variant?.id ?? null,
       title: variant.title,
       product: (variant.product as Product).id as string,
-      values: [],
+      values: variant.values,
+      image: variant.image
     }
   }
 

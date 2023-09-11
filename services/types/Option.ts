@@ -6,3 +6,10 @@ export interface Option {
   description: string,
   values: string[],
 }
+
+export interface OptionValueData {
+  option: string,
+  name: string,
+  title: string,
+  value: string
+}

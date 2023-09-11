@@ -11,6 +11,7 @@ export class Product {
     category: null,
     variants: [],
     images: [],
+    options: []
   }
 
   /**
@@ -32,6 +33,7 @@ export class Product {
       title: product.title,
       description: product.description,
       category: null,
+      options: []
     }
   }
 

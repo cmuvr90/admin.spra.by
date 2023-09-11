@@ -2,6 +2,8 @@ import Fetcher from './Fetcher';
 import {FetchResponseStatus} from "@/services/types/Fetcher";
 import {Obj} from "@/services/types";
 import {Product, ProductData} from "@/services/types/Product";
+import {OptionValueData} from "@/services/types/Option";
+import {VariantData} from "@/services/types/Variant";
 
 export default class ProductApi {
   private readonly fetcher;
@@ -78,43 +80,72 @@ export default class ProductApi {
 
   /**
    *
-   * @param id
+   * @param productId
    * @param imageId
    */
-  public setMainImage = async (id: string, imageId: string): Promise<{
+  public setMainImage = async (productId: string, imageId: string): Promise<{
     data: Product | null,
     status: FetchResponseStatus,
     error: string | null
   }> => {
-    const {data, status, error} = await this.fetcher.put(`/products/${id}/images/${imageId}/main`);
+    const {data, status, error} = await this.fetcher.put(`/products/${productId}/images/${imageId}/main`);
     return {data, status, error};
   }
 
   /**
    *
-   * @param id
+   * @param productId
    * @param params
    */
-  public createImages = async (id: string, params: FormData): Promise<{
+  public createImages = async (productId: string, params: FormData): Promise<{
     data: Product | null,
     status: FetchResponseStatus,
     error: string | null
   }> => {
-    const {data, status, error} = await this.fetcher.post(`/products/${id}/images`, params);
+    const {data, status, error} = await this.fetcher.post(`/products/${productId}/images`, params);
     return {data, status, error};
   }
 
   /**
    *
-   * @param id
+   * @param productId
    * @param params
    */
-  public deleteImages = async (id: string, params: { ids: string[] }): Promise<{
+  public deleteImages = async (productId: string, params: { ids: string[] }): Promise<{
     data: Product | null,
     status: FetchResponseStatus,
     error: string | null
   }> => {
-    const {data, status, error} = await this.fetcher.delete(`/products/${id}/images`, params);
+    const {data, status, error} = await this.fetcher.delete(`/products/${productId}/images`, params);
+    return {data, status, error};
+  }
+
+  /**
+   *
+   * @param productId
+   * @param params
+   */
+  public createVariant = async (productId: string, params: OptionValueData): Promise<{
+    data: Product | null,
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const {data, status, error} = await this.fetcher.post(`/products/${productId}/variants`, params);
+    return {data, status, error};
+  }
+
+  /**
+   *
+   * @param productId
+   * @param variantId
+   * @param params
+   */
+  public updateVariant = async (productId: string, variantId: string, params: VariantData): Promise<{
+    data: Product | null,
+    status: FetchResponseStatus,
+    error: string | null
+  }> => {
+    const {data, status, error} = await this.fetcher.put(`/products/${productId}/variants/${variantId}`, params);
     return {data, status, error};
   }
 }
