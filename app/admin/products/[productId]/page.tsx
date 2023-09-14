@@ -4,9 +4,9 @@ import {ProductTemplate} from "@/templates/ProductTemplate";
 
 let product: ProductInterface | null = null;
 
-export default async function ProductPage({params: {id}}: Props) {
+export default async function ProductPage({params: {productId}}: Props) {
   try {
-    product = await getProduct(id);
+    product = await getProduct(productId);
   } catch (e) {
     console.log('ERROR = ', e);
   }
@@ -15,5 +15,5 @@ export default async function ProductPage({params: {id}}: Props) {
 }
 
 type Props = {
-  params: { id: string }
+  params: { productId: string }
 }

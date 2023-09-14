@@ -31,9 +31,16 @@ export function useConfirm() {
       primaryAction: {
         ...defaultModalSettings.primaryAction,
         onAction: async () => {
-          modal.primary.loading()
-          await access()
-          modal.close()
+          try {
+            modal.primary.loading()
+            modal.secondary.disable()
+            modal.disableClose();
+            await access()
+            modal.close()
+          } catch (e) {
+            console.log('ERROR = ', e);
+            modal.close()
+          }
         },
       },
       secondaryActions: [{

@@ -5,14 +5,14 @@ import {Card, FormLayout, Layout, LegacyStack, Page, PageActions, TextField} fro
 import '@shopify/polaris/build/esm/styles.css'
 import {useMessage, useSaveBar, useViewImageModal} from "@/hooks";
 import {Product as ProductInterface} from "@/services/types/Product";
-import {useRouter} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import {useConfirm} from "@/hooks/useConfirm";
 import {Product} from "@/services/Product";
 import {
   createImages,
   createProduct,
   deleteImages,
-  deleteProduct,
+  deleteProduct, getProduct,
   setProductMainImage,
   updateProduct
 } from "@/serverActions/product";
@@ -27,6 +27,7 @@ import VariantsPanel from "@/components/VariantsPanel";
 
 export const ProductTemplate = ({product: productData}: Props) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const confirm = useConfirm()
   const saveBar = useSaveBar(
     !!productData?.id ? onUpdate : onCreate,
@@ -50,6 +51,20 @@ export const ProductTemplate = ({product: productData}: Props) => {
     images: [...(product.images as ImageInterface[]), ...(images as ImageInterface[])],
   }))
 
+  useEffect(() => {
+    if (searchParams) {
+      if (searchParams.get('refresh')) {
+        setDisabled(true);
+        setTimeout(() => getProduct(product.id as string).then(data => {
+          if (data) {
+            setDefaultProduct(data);
+            setProduct(data);
+            router.push(`/admin/products/${product.id}`)
+          }
+        }).finally(() => {setDisabled(false)}), 500)
+      }
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const isEqual = saveBar.onChange(Product.getData(defaultProduct), Product.getData(product));

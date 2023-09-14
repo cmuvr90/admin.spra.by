@@ -36,7 +36,7 @@ export default function MainLayout({children}: { children: ReactNode }) {
     fullScreen={modal.fullScreen}
     large={modal.large}
     open={modal.open}
-    onClose={() => dispatch(onResetModal())}
+    onClose={typeof modal.onClose === 'function' ? modal.onClose() : () => dispatch(onResetModal())}
     title={modal.title}
     primaryAction={modal.primaryAction}
     secondaryActions={modal.secondaryActions}

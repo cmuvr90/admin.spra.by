@@ -32,7 +32,7 @@ const VariantsPanel = ({product, onUpdate, disabled = false}: Props) => {
   }
 
   const onEditVariant = async (variant: VariantInterface) => {
-    router.push(`/admin/product/${product.id}/variants/${variant.id}`)
+    router.push(`/admin/products/${product.id}/variants/${variant.id}`)
   }
 
   const onDeleteVariant = async (variant: VariantInterface) => {
@@ -47,6 +47,11 @@ const VariantsPanel = ({product, onUpdate, disabled = false}: Props) => {
     }
   }
 
+  /**
+   *
+   * @param variantId
+   * @param images
+   */
   const onSelectImage = async (variantId: string, images: Image[]) => {
     try {
       const image = images?.length ? images[0] : null

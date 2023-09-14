@@ -7,6 +7,7 @@ import {useModal} from "@/hooks/useModal";
 import {usePickerModal} from "@/hooks/usePickerModal";
 import {useViewImageModal} from "@/hooks/useViewImageModal";
 import {useCreateVariantModal} from "@/hooks/useCreateVariantModal";
+import {useImagePickerModal} from "@/hooks/useImagePickerModal";
 
 export {
   useMessage,
@@ -17,5 +18,6 @@ export {
   useModal,
   usePickerModal,
   useViewImageModal,
-  useCreateVariantModal
+  useCreateVariantModal,
+  useImagePickerModal
 }

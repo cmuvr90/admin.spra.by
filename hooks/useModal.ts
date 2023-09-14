@@ -19,6 +19,8 @@ export function useModal() {
 
   const loading = (value: boolean = true) => change({loading: value})
 
+  const disableClose = () => change({onClose: () => {}})
+
   const unloading = () => loading(false)
 
   const primaryChange = (value: any = {}) => dispatch(onChangeModalPrimaryAction(value))
@@ -48,6 +50,7 @@ export function useModal() {
     unloading,
     setTitle,
     setContent,
+    disableClose,
     primary: {
       change: primaryChange,
       setTitle: primaryChangeTitle,
