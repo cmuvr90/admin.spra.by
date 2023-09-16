@@ -13,6 +13,8 @@ import {
 } from '@shopify/polaris-icons'
 import {usePathname} from "next/navigation";
 
+if (typeof window === 'undefined') React.useLayoutEffect = React.useEffect  //hot fix
+
 export const AdminMenu = ({}) => {
   const path = usePathname();
 
