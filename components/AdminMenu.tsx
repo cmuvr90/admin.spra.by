@@ -10,6 +10,7 @@ import {
   CategoriesMajor,
   CollectionsMajor,
   TroubleshootMajor,
+  SettingsMajor
 } from '@shopify/polaris-icons'
 import {usePathname} from "next/navigation";
 
@@ -58,5 +59,19 @@ export const AdminMenu = ({}) => {
         },
       ]}
     />
+    <Navigation.Section items={[
+      {
+        url: '/admin/settings',
+        label: 'Settings',
+        icon: SettingsMajor,
+        expanded: false,
+        subNavigationItems: [
+          {
+            url: '/admin/settings/information',
+            label: 'Information',
+          }
+        ],
+      },
+    ]}/>
   </Navigation>
 }

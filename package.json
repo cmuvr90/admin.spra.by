@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@shopify/polaris": "^11.13.0",
+    "@shopify/polaris": "^11.19.0",
     "@splidejs/react-splide": "^0.7.12",
     "@types/node": "20.4.5",
     "@types/react": "18.2.16",
