@@ -1,26 +1,75 @@
 'use client';
 
-import React from 'react'
-import {Button, Card, Icon, LegacyStack, Page, Text} from '@shopify/polaris'
+import React, {useEffect, useMemo, useState} from 'react'
+import {LegacyCard, Page, Tabs} from '@shopify/polaris'
 import '@shopify/polaris/build/esm/styles.css'
-import {CircleInformationMajor} from "@shopify/polaris-icons";
+import {InformationSettings} from "@/components/InformationSettings";
+import {Settings} from "@/services/types/Settings";
+import {getSettings} from "@/serverActions/settings";
+import {useMessage} from "@/hooks";
+
+const IDS = {
+  INFORMATION: 'information',
+  DELIVERY: 'delivery',
+  PAYMENT: 'payment'
+}
+
+const TABS = [
+  {
+    id: IDS.INFORMATION,
+    content: 'Information',
+  },
+  {
+    id: IDS.DELIVERY,
+    content: 'Delivery',
+  },
+  {
+    id: IDS.PAYMENT,
+    content: 'Payment',
+  }
+];
 
 export const SettingsTemplate = () => {
+  const toast = useMessage();
+  const [selected, setSelected] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [settings, setSettings] = useState<Settings>({
+    information: ''
+  });
+
+  useEffect(() => {
+    onGetSettings().then();
+  }, [])
+
+  const currentTab = useMemo(() => TABS[selected], [selected]);
+
+  async function onGetSettings() {
+    setLoading(true);
+    try {
+      const data = await getSettings();
+      if (!data) throw Error('Error');
+      setSettings(data);
+    } catch (e) {
+      toast.error((e as Error).message || 'error')
+    }
+    setLoading(false);
+  }
+
   return <Page title={'Settings'}>
-    <LegacyStack>
-      <Card>
-        <div style={{minWidth: '200px'}}>
-          <LegacyStack vertical distribution={'fill'}>
-            <LegacyStack>
-              <Icon source={CircleInformationMajor}/>
-              <Text as={'h3'} fontWeight={'bold'}>Information</Text>
-            </LegacyStack>
-            <LegacyStack distribution={'trailing'}>
-              <Button plain url={'/admin/settings/information'}>Edit</Button>
-            </LegacyStack>
-          </LegacyStack>
-        </div>
-      </Card>
-    </LegacyStack>
+    <LegacyCard>
+      <Tabs disabled={loading} tabs={TABS} selected={selected} onSelect={setSelected}>
+        <LegacyCard.Section>
+          {
+            (IDS.INFORMATION === currentTab.id && !loading) && <InformationSettings information={settings.information}/>
+          }
+          {
+            IDS.DELIVERY === currentTab.id && <div>//delivery</div>
+          }
+          {
+            IDS.PAYMENT === currentTab.id && <div>//payment</div>
+          }
+        </LegacyCard.Section>
+      </Tabs>
+    </LegacyCard>
   </Page>
 }

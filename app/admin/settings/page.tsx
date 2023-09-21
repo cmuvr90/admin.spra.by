@@ -1,5 +1,5 @@
 import {SettingsTemplate} from "@/templates/SettingsTemplate";
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
   return <SettingsTemplate/>
 }

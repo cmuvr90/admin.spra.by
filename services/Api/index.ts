@@ -7,6 +7,7 @@ import OptionApi from "@/services/Api/options";
 import ProductApi from "@/services/Api/products";
 import CollectionApi from "@/services/Api/collections";
 import NavigationApi from "@/services/Api/navigations";
+import SettingsApi from "@/services/Api/settings";
 
 export default class Api {
   public readonly users;
@@ -16,6 +17,7 @@ export default class Api {
   public readonly products;
   public readonly collections;
   public readonly navigations;
+  public readonly settings;
 
   constructor(headers?: { [key: string]: string } | null) {
     const fetcher = new Fetcher({baseUrl: Config.API_BASE_URL, headers});
@@ -26,5 +28,6 @@ export default class Api {
     this.products = new ProductApi(fetcher);
     this.collections = new CollectionApi(fetcher);
     this.navigations = new NavigationApi(fetcher);
+    this.settings = new SettingsApi(fetcher);
   }
 }

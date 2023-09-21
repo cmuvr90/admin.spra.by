@@ -20,7 +20,7 @@ export const AdminMenu = ({}) => {
   const path = usePathname();
 
   return <Navigation location={!!path?.length && path !== '/admin' ? path : '/admin/dashboard'}>
-    <Navigation.Section
+    <Navigation.Section fill
       items={[
         {
           label: 'Dashboard',
@@ -64,13 +64,6 @@ export const AdminMenu = ({}) => {
         url: '/admin/settings',
         label: 'Settings',
         icon: SettingsMajor,
-        expanded: false,
-        subNavigationItems: [
-          {
-            url: '/admin/settings/information',
-            label: 'Information',
-          }
-        ],
       },
     ]}/>
   </Navigation>
